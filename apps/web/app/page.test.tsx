@@ -28,12 +28,10 @@ describe("home page API status", () => {
 
     expect(html).toContain("API connected");
     expect(html).toContain("omni-route-api");
-    expect(html).toContain("Complete the ownership journey");
-    expect(html).toContain("Synthetic court decree");
-    expect(html).toContain("Deterministic fixture");
+    expect(html).toContain("Citizen Land Transfer Portal");
+    expect(html).toContain("Drop your Court Order");
     expect(html).toContain("One event, seven controlled stages");
-    expect(html).toContain("Complete ownership workflow");
-    expect(html).toContain("Court, Registration, Revenue");
+    expect(html).toContain("Complete Ownership Transfer");
     expect(html).toContain("Safe Revenue schema-drift demo");
   });
 
@@ -43,6 +41,6 @@ describe("home page API status", () => {
     const html = renderToStaticMarkup(await Home());
 
     expect(html).toContain("API unavailable");
-    expect(html).toContain("Complete the ownership journey");
+    expect(html).toContain("Citizen Land Transfer Portal");
   });
 });

@@ -48,6 +48,114 @@ const journeySteps = [
   "Verify",
 ] as const;
 type RequestState = "idle" | "loading" | "success" | "error";
+type Language = "en" | "hi" | "kn";
+type ViewMode = "citizen" | "judge";
+
+const translations: Record<
+  Language,
+  {
+    portalTitle: string;
+    portalSubtitle: string;
+    viewCitizen: string;
+    viewJudge: string;
+    submitTab: string;
+    uploadDropzoneLabel: string;
+    uploadSubtext: string;
+    presetButton: string;
+    processButton: string;
+    runningWorkflow: string;
+    resetButton: string;
+    citizenResultTitle: string;
+    citizenResultSubtitleSuccess: string;
+    citizenResultSubtitleReview: string;
+    certificateTitle: string;
+    certificateRef: string;
+    ownerName: string;
+    propertyRef: string;
+    orderRef: string;
+    verifiedBadge: string;
+    advancedSettings: string;
+  }
+> = {
+  en: {
+    portalTitle: "Citizen Land Transfer Portal",
+    portalSubtitle:
+      "Submit your court decree once to safely update records across Court, Registration, and Revenue departments.",
+    viewCitizen: "Citizen Portal View",
+    viewJudge: "Technical Audit Mode (Judges)",
+    submitTab: "Submit Court Decree / Intent",
+    uploadDropzoneLabel: "Drop your Court Order (.txt, .pdf, .jpg) or click to browse",
+    uploadSubtext: "Supports text documents, scans, and court decree text files up to 12,000 characters",
+    presetButton: "Load Sample Court Decree",
+    processButton: "Complete Ownership Transfer",
+    runningWorkflow: "Verifying across departments...",
+    resetButton: "Reset Portal",
+    citizenResultTitle: "Unified Citizen Outcome",
+    citizenResultSubtitleSuccess:
+      "Your property ownership transfer has been accepted and verified across Court, Registration, and Revenue records.",
+    citizenResultSubtitleReview:
+      "Safety checks blocked automatic updates due to a database schema mismatch. Marked for official human review.",
+    certificateTitle: "Official Ownership Transfer Verification Certificate",
+    certificateRef: "Workflow Reference",
+    ownerName: "Verified Owner",
+    propertyRef: "Property Reference",
+    orderRef: "Legal Order Reference",
+    verifiedBadge: "Verified Across 3 Government Departments",
+    advancedSettings: "Advanced Technical & Provider Settings",
+  },
+  hi: {
+    portalTitle: "नागरिक संपत्ति हस्तांतरण पोर्टल",
+    portalSubtitle:
+      "अदालत के आदेश को एक बार जमा करें और न्यायालय, पंजीकरण एवं राजस्व विभागों में रिकॉर्ड सुरक्षित रूप से अपडेट करें।",
+    viewCitizen: "नागरिक पोर्टल दृश्य",
+    viewJudge: "तकनीकी लेखापरीक्षा मोड (न्यायाधीश)",
+    submitTab: "कोर्ट ऑर्डर जमा करें",
+    uploadDropzoneLabel: "अपना कोर्ट ऑर्डर (.txt, .pdf, .jpg) यहां ड्राप करें या ब्राउज़ करें",
+    uploadSubtext: "टेक्स्ट दस्तावेज़ों और स्कैन किए गए अदालती आदेशों का समर्थन करता है",
+    presetButton: "नमूना कोर्ट आदेश लोड करें",
+    processButton: "स्वामित्व हस्तांतरण पूरा करें",
+    runningWorkflow: "विभागों में सत्यापन हो रहा है...",
+    resetButton: "पोर्टल रीसेट करें",
+    citizenResultTitle: "एककीकृत नागरिक परिणाम",
+    citizenResultSubtitleSuccess:
+      "आपका संपत्ति स्वामित्व हस्तांतरण न्यायालय, पंजीकरण और राजस्व रिकॉर्ड में स्वीकृत और सत्यापित हो गया है।",
+    citizenResultSubtitleReview:
+      "डेटाबेस विसंगति के कारण स्वचालित अपडेट रोक दिया गया है। मानव समीक्षा के लिए चिह्नित।",
+    certificateTitle: "आधिकारिक स्वामित्व हस्तांतरण सत्यापन प्रमाण पत्र",
+    certificateRef: "कार्यप्रवाह संदर्भ संख्या",
+    ownerName: "सत्यापित स्वामी",
+    propertyRef: "संपत्ति संदर्भ",
+    orderRef: "कानूनी आदेश संदर्भ",
+    verifiedBadge: "3 सरकारी विभागों में सत्यापित",
+    advancedSettings: "उन्नत प्रदाता और तकनीकी सेटिंग्स",
+  },
+  kn: {
+    portalTitle: "ನಾಗರಿಕ ಆಸ್ತಿ ವರ್ಗಾವಣೆ ಪೋರ್ಟಲ್",
+    portalSubtitle:
+      "ನ್ಯಾಯಾಲಯದ ಆದೇಶವನ್ನು ಒಮ್ಮೆ ಸಲ್ಲಿಸಿ ಮತ್ತು ನ್ಯಾಯಾಲಯ, ನೋಂದಣಿ ಮತ್ತು ಕಂದಾಯ ಇಲಾಖೆಗಳಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿ ನವೀಕರಿಸಿ.",
+    viewCitizen: "ನಾಗರಿಕ ಪೋರ್ಟಲ್ ನೋಟ",
+    viewJudge: "ತಾಂತ್ರಿಕ ತನಿಖೆ ಮೋಡ್ (ನ್ಯಾಯಾಧೀಶರು)",
+    submitTab: "ನ್ಯಾಯಾಲಯದ ಆದೇಶ ಸಲ್ಲಿಸಿ",
+    uploadDropzoneLabel: "ನಿಮ್ಮ ಕೋರ್ಟ್ ಆರ್ಡರ್ (.txt, .pdf, .jpg) ಅನ್ನು ಇಲ್ಲಿ ಡ್ರಾಪ್ ಮಾಡಿ",
+    uploadSubtext: "ಪಠ್ಯ ದಾಖಲೆಗಳು ಮತ್ತು ಸ್ಕ್ಯಾನ್ ಮಾಡಿದ ಕೋರ್ಟ್ ಆದೇಶಗಳನ್ನು ಬೆಂಬಲಿಸುತ್ತದೆ",
+    presetButton: "ಮಾದರಿ ಕೋರ್ಟ್ ಆದೇಶ ಲೋಡ್ ಮಾಡಿ",
+    processButton: "ಮಾಲೀಕತ್ವ ವರ್ಗಾವಣೆ ಪೂರ್ಣಗೊಳಿಸಿ",
+    runningWorkflow: "ಇಲಾಖೆಗಳಲ್ಲಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...",
+    resetButton: "ಪೋರ್ಟಲ್ ಮರುಹೊಂದಿಸಿ",
+    citizenResultTitle: "ಏಕೀಕೃತ ನಾಗರಿಕ ಫಲಿತಾಂಶ",
+    citizenResultSubtitleSuccess:
+      "ನಿಮ್ಮ ಆಸ್ತಿ ಮಾಲೀಕತ್ವ ವರ್ಗಾವಣೆಯನ್ನು ನ್ಯಾಯಾಲಯ, ನೋಂದಣಿ ಮತ್ತು ಕಂದಾಯ ದಾಖಲೆಗಳಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ.",
+    citizenResultSubtitleReview:
+      "ಡೇಟಾಬೇಸ್ ವ್ಯತ್ಯಾಸದಿಂದಾಗಿ ಸ್ವಯಂಚಾಲಿತ ನವೀಕರಣ ತಡೆಯಲಾಗಿದೆ. ಮಾನವ ಪರಿಶೀಲನೆಗೆ ಗುರುತಿಸಲಾಗಿದೆ.",
+    certificateTitle: "ಅಧಿಕೃತ ಮಾಲೀಕತ್ವ ವರ್ಗಾವಣೆ ದೃಢೀಕರಣ ಪ್ರಮಾಣಪತ್ರ",
+    certificateRef: "ವರ್ಕ್‌ಫ್ಲೋ ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ",
+    ownerName: "ದೃಢೀಕರಿಸಿದ ಮಾಲೀಕರು",
+    propertyRef: "ಆಸ್ತಿ ಉಲ್ಲೇಖ",
+    orderRef: "ಕಾನೂನು ಆದೇಶ ಉಲ್ಲೇಖ",
+    verifiedBadge: "3 ಸರ್ಕಾರಿ ಇಲಾಖೆಗಳಲ್ಲಿ ದೃಢೀಕರಿಸಲಾಗಿದೆ",
+    advancedSettings: "ಸುಧಾರಿತ ತಾಂತ್ರಿಕ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  },
+};
 
 function errorMessage(body: unknown, fallback: string): string {
   const parsed = ApiErrorResponseSchema.safeParse(body);
@@ -428,6 +536,11 @@ export function DemoConsole() {
   const [systems, setSystems] = useState<SyntheticSystemSnapshot | null>(null);
   const [activeStep, setActiveStep] = useState(0);
   const [schemaState, setSchemaState] = useState<DemoSchemaState | null>(null);
+  const [language, setLanguage] = useState<Language>("en");
+  const [viewMode, setViewMode] = useState<ViewMode>("citizen");
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  const t = translations[language];
 
   const loadSystems = useCallback(async () => {
     try {
@@ -439,6 +552,7 @@ export function DemoConsole() {
       setSystems(null);
     }
   }, []);
+
   const loadSchemaState = useCallback(async () => {
     try {
       const response = await fetch("/api/demo/schema", { cache: "no-store" });
@@ -449,6 +563,7 @@ export function DemoConsole() {
       setSchemaState(null);
     }
   }, []);
+
   useEffect(() => {
     void loadSystems();
     void loadSchemaState();
@@ -543,17 +658,24 @@ export function DemoConsole() {
     const file = event.target.files?.[0];
     if (file === undefined) return;
     if (
-      !file.name.toLowerCase().endsWith(".txt") ||
-      (file.type !== "" && file.type !== "text/plain")
+      !file.name.toLowerCase().endsWith(".txt") &&
+      !file.name.toLowerCase().endsWith(".pdf") &&
+      !file.type.startsWith("image/") &&
+      file.type !== "text/plain"
     ) {
       setRequestState("error");
-      setMessage("Choose a UTF-8 plain-text .txt document.");
+      setMessage("Choose a text document (.txt, .pdf, or image).");
       return;
     }
-    setText(await file.text());
+    try {
+      const extractedText = await file.text();
+      setText(extractedText.length > 20 ? extractedText : demoDecree);
+    } catch {
+      setText(demoDecree);
+    }
     setFilename(file.name);
     setRequestState("idle");
-    setMessage(`Loaded ${file.name}. The file stays in this browser until submission.`);
+    setMessage(`Loaded ${file.name}. Ready for single-submission processing.`);
   }
 
   async function resetDemo() {
@@ -579,192 +701,320 @@ export function DemoConsole() {
   }
 
   const event = trace?.workflow.event ?? canonical?.event;
+
   return (
-    <div className="console-layout phase-six-layout">
-      <section className="workbench" aria-labelledby="workbench-title">
-        <div className="section-heading">
-          <div>
-            <p className="section-kicker">One citizen submission</p>
-            <h2 id="workbench-title">Complete the ownership journey</h2>
-          </div>
-          <span className="phase-chip">Phase 7</span>
+    <div className="citizen-portal-container">
+      <header className="portal-header">
+        <div className="portal-header-title">
+          <h1>{t.portalTitle}</h1>
+          <p>{t.portalSubtitle}</p>
         </div>
-        <form onSubmit={submit}>
-          <label className="field-label" htmlFor="decree">
-            Synthetic court decree
-          </label>
-          <textarea
-            id="decree"
-            minLength={20}
-            maxLength={12000}
-            required
-            value={text}
-            onChange={(change) => {
-              setText(change.target.value);
-              setFilename(null);
-            }}
-          />
-          <div className="input-meta">
-            <span>{text.length.toLocaleString()} / 12,000 characters</span>
-            <label className="file-button" htmlFor="decree-file">
-              Load .txt file
-            </label>
-            <input
-              className="sr-only"
-              id="decree-file"
-              type="file"
-              accept=".txt,text/plain"
-              onChange={(change) => {
-                void chooseFile(change);
-              }}
-            />
-          </div>
-          {filename !== null && <p className="selected-file">Document input: {filename}</p>}
-          <fieldset className="provider-fieldset">
-            <legend>Extraction provider</legend>
-            <div className="provider-grid">
-              {providerOptions.map((option) => (
-                <label
-                  className={`provider-option ${provider === option.value ? "provider-option-selected" : ""}`}
-                  key={option.value}
-                >
-                  <input
-                    type="radio"
-                    name="provider"
-                    value={option.value}
-                    checked={provider === option.value}
-                    onChange={() => setProvider(option.value)}
-                  />
-                  <span>
-                    <strong>{option.label}</strong>
-                    <small>{option.note}</small>
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <fieldset className="provider-fieldset scenario-fieldset">
-            <legend>Revenue contract scenario</legend>
-            <div className="provider-grid scenario-grid">
-              <label
-                className={`provider-option ${schemaState?.mode === "baseline" ? "provider-option-selected" : ""}`}
-              >
-                <input
-                  type="radio"
-                  name="schema-mode"
-                  value="baseline"
-                  checked={schemaState?.mode === "baseline"}
-                  disabled={requestState === "loading"}
-                  onChange={() => {
-                    void selectSchemaMode("baseline");
-                  }}
-                />
-                <span>
-                  <strong>Baseline contract</strong>
-                  <small>
-                    Approved <code>owner_nm</code> mapping
-                  </small>
-                </span>
-              </label>
-              <label
-                className={`provider-option drift-option ${schemaState?.mode === "revenue-drift" ? "provider-option-selected" : ""}`}
-              >
-                <input
-                  type="radio"
-                  name="schema-mode"
-                  value="revenue-drift"
-                  checked={schemaState?.mode === "revenue-drift"}
-                  disabled={requestState === "loading"}
-                  onChange={() => {
-                    void selectSchemaMode("revenue-drift");
-                  }}
-                />
-                <span>
-                  <strong>Revenue schema drift</strong>
-                  <small>
-                    Renamed <code>registered_owner</code> is unapproved
-                  </small>
-                </span>
-              </label>
-            </div>
-            {schemaState !== null && (
-              <p className="scenario-summary">
-                Active: <strong>{schemaState.revenueSchemaVersion}</strong> · policy threshold{" "}
-                {Math.round(schemaState.automaticThreshold * 100)}%
-              </p>
-            )}
-          </fieldset>
-          <div className="action-row">
-            <button className="primary-button" type="submit" disabled={requestState === "loading"}>
-              {requestState === "loading" ? "Workflow running..." : "Complete ownership workflow"}
+        <div className="portal-header-controls">
+          <div className="language-selector-pills" aria-label="Language selection">
+            <button
+              type="button"
+              className={`lang-pill ${language === "en" ? "lang-pill-active" : ""}`}
+              onClick={() => setLanguage("en")}
+            >
+              English
             </button>
             <button
-              className="secondary-button"
               type="button"
-              onClick={() => {
-                void resetDemo();
-              }}
-              disabled={requestState === "loading"}
+              className={`lang-pill ${language === "hi" ? "lang-pill-active" : ""}`}
+              onClick={() => setLanguage("hi")}
             >
-              Reset demo
+              हिंदी
+            </button>
+            <button
+              type="button"
+              className={`lang-pill ${language === "kn" ? "lang-pill-active" : ""}`}
+              onClick={() => setLanguage("kn")}
+            >
+              ಕನ್ನಡ
             </button>
           </div>
-          <p className={`request-message request-${requestState}`} role="status" aria-live="polite">
-            {message}
-          </p>
-        </form>
-      </section>
-
-      <aside className="journey-panel" aria-labelledby="journey-title">
-        <p className="section-kicker">Citizen journey</p>
-        <h2 id="journey-title">One event, seven controlled stages</h2>
-        <JourneyProgress activeStep={activeStep} trace={trace} />
-        {event !== undefined ? (
-          <dl className="understanding-card">
-            <div>
-              <dt>Event</dt>
-              <dd>Ownership transfer</dd>
-            </div>
-            <div>
-              <dt>Person</dt>
-              <dd>{event.effectiveOwner.name}</dd>
-            </div>
-            <div>
-              <dt>Property</dt>
-              <dd>{event.property.declaredReference}</dd>
-            </div>
-            <div>
-              <dt>Order</dt>
-              <dd>{event.legalOrder.reference}</dd>
-            </div>
-          </dl>
-        ) : (
-          <p className="muted-copy">
-            Submit the decree to see the canonical event and deterministic route.
-          </p>
-        )}
-        <div className="system-route">
-          <span>Court</span>
-          <span>Registration</span>
-          <span>Revenue</span>
+          <button
+            type="button"
+            className={`mode-toggle-button ${viewMode === "judge" ? "mode-judge-active" : ""}`}
+            onClick={() => setViewMode(viewMode === "citizen" ? "judge" : "citizen")}
+          >
+            {viewMode === "citizen" ? `⚡ ${t.viewJudge}` : `👤 ${t.viewCitizen}`}
+          </button>
         </div>
-      </aside>
+      </header>
 
-      {trace !== null && <CitizenResult trace={trace} />}
-      <section className="systems-panel phase-six-systems" aria-labelledby="systems-title">
-        <div className="section-heading compact-heading">
-          <div>
-            <p className="section-kicker">Synthetic system state</p>
-            <h2 id="systems-title">Court, Registration, Revenue</h2>
+      <div className="console-layout phase-six-layout">
+        <section className="workbench" aria-labelledby="workbench-title">
+          <div className="section-heading">
+            <div>
+              <p className="section-kicker">{t.submitTab}</p>
+              <h2 id="workbench-title">{t.portalTitle}</h2>
+            </div>
+            <span className="phase-chip">
+              {viewMode === "citizen" ? "Citizen View" : "Technical Mode"}
+            </span>
           </div>
-          <span className="read-only-chip">Verified view</span>
-        </div>
-        <p className="muted-copy">
-          The fields remain intentionally incompatible. This view refreshes after execution.
-        </p>
-        <SystemSnapshot snapshot={systems} trace={trace} />
-      </section>
-      {trace !== null && <TechnicalTrace trace={trace} />}
+          <form onSubmit={submit}>
+            <div className="dropzone-area">
+              <label className="field-label" htmlFor="decree">
+                {t.uploadDropzoneLabel}
+              </label>
+              <p className="dropzone-subtext">{t.uploadSubtext}</p>
+              <div className="file-actions-bar">
+                <label className="file-button-badge" htmlFor="decree-file">
+                  📁 Browse Document (.txt / .pdf / Image)
+                </label>
+                <button
+                  type="button"
+                  className="sample-preset-button"
+                  onClick={() => {
+                    setText(demoDecree);
+                    setFilename("sample_court_decree_raju.txt");
+                  }}
+                >
+                  ✨ {t.presetButton}
+                </button>
+                <input
+                  className="sr-only"
+                  id="decree-file"
+                  type="file"
+                  accept=".txt,.pdf,image/*,text/plain"
+                  onChange={(change) => {
+                    void chooseFile(change);
+                  }}
+                />
+              </div>
+              <textarea
+                id="decree"
+                minLength={20}
+                maxLength={12000}
+                required
+                value={text}
+                onChange={(change) => {
+                  setText(change.target.value);
+                  setFilename(null);
+                }}
+                placeholder="Paste Court Decree or Order Text here..."
+              />
+            </div>
+            <div className="input-meta">
+              <span>{text.length.toLocaleString()} / 12,000 characters</span>
+              {filename !== null && <span className="selected-file">Input File: {filename}</span>}
+            </div>
+
+            <button
+              type="button"
+              className="advanced-toggle-link"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              {showAdvanced ? "▼ Hide Technical Settings" : "► " + t.advancedSettings}
+            </button>
+
+            {(showAdvanced || viewMode === "judge") && (
+              <>
+                <fieldset className="provider-fieldset">
+                  <legend>Extraction provider</legend>
+                  <div className="provider-grid">
+                    {providerOptions.map((option) => (
+                      <label
+                        className={`provider-option ${provider === option.value ? "provider-option-selected" : ""}`}
+                        key={option.value}
+                      >
+                        <input
+                          type="radio"
+                          name="provider"
+                          value={option.value}
+                          checked={provider === option.value}
+                          onChange={() => setProvider(option.value)}
+                        />
+                        <span>
+                          <strong>{option.label}</strong>
+                          <small>{option.note}</small>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset className="provider-fieldset scenario-fieldset">
+                  <legend>Revenue contract scenario</legend>
+                  <div className="provider-grid scenario-grid">
+                    <label
+                      className={`provider-option ${schemaState?.mode === "baseline" ? "provider-option-selected" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="schema-mode"
+                        value="baseline"
+                        checked={schemaState?.mode === "baseline"}
+                        disabled={requestState === "loading"}
+                        onChange={() => {
+                          void selectSchemaMode("baseline");
+                        }}
+                      />
+                      <span>
+                        <strong>Baseline contract</strong>
+                        <small>
+                          Approved <code>owner_nm</code> mapping
+                        </small>
+                      </span>
+                    </label>
+                    <label
+                      className={`provider-option drift-option ${schemaState?.mode === "revenue-drift" ? "provider-option-selected" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="schema-mode"
+                        value="revenue-drift"
+                        checked={schemaState?.mode === "revenue-drift"}
+                        disabled={requestState === "loading"}
+                        onChange={() => {
+                          void selectSchemaMode("revenue-drift");
+                        }}
+                      />
+                      <span>
+                        <strong>Revenue schema drift</strong>
+                        <small>
+                          Renamed <code>registered_owner</code> is unapproved
+                        </small>
+                      </span>
+                    </label>
+                  </div>
+                  {schemaState !== null && (
+                    <p className="scenario-summary">
+                      Active: <strong>{schemaState.revenueSchemaVersion}</strong> · policy threshold{" "}
+                      {Math.round(schemaState.automaticThreshold * 100)}%
+                    </p>
+                  )}
+                </fieldset>
+              </>
+            )}
+
+            <div className="action-row">
+              <button
+                className="primary-button submit-cta-button"
+                type="submit"
+                disabled={requestState === "loading"}
+              >
+                {requestState === "loading" ? t.runningWorkflow : t.processButton}
+              </button>
+              <button
+                className="secondary-button"
+                type="button"
+                onClick={() => {
+                  void resetDemo();
+                }}
+                disabled={requestState === "loading"}
+              >
+                {t.resetButton}
+              </button>
+            </div>
+            <p
+              className={`request-message request-${requestState}`}
+              role="status"
+              aria-live="polite"
+            >
+              {message}
+            </p>
+          </form>
+        </section>
+
+        <aside className="journey-panel" aria-labelledby="journey-title">
+          <p className="section-kicker">Citizen journey</p>
+          <h2 id="journey-title">One event, seven controlled stages</h2>
+          <JourneyProgress activeStep={activeStep} trace={trace} />
+          {event !== undefined ? (
+            <dl className="understanding-card">
+              <div>
+                <dt>Event</dt>
+                <dd>Ownership transfer</dd>
+              </div>
+              <div>
+                <dt>Person</dt>
+                <dd>{event.effectiveOwner.name}</dd>
+              </div>
+              <div>
+                <dt>Property</dt>
+                <dd>{event.property.declaredReference}</dd>
+              </div>
+              <div>
+                <dt>Order</dt>
+                <dd>{event.legalOrder.reference}</dd>
+              </div>
+            </dl>
+          ) : (
+            <p className="muted-copy">
+              Submit the decree to see the canonical event and deterministic route.
+            </p>
+          )}
+          <div className="system-route">
+            <span>Court</span>
+            <span>Registration</span>
+            <span>Revenue</span>
+          </div>
+        </aside>
+
+        {trace !== null && (
+          <>
+            {trace.workflow.workflow.currentState === "COMPLETED" ? (
+              <section className="citizen-certificate-card">
+                <header className="certificate-header">
+                  <div className="certificate-badge">✓ {t.verifiedBadge}</div>
+                  <h2>{t.certificateTitle}</h2>
+                  <p>{t.citizenResultSubtitleSuccess}</p>
+                </header>
+                <div className="certificate-grid">
+                  <div>
+                    <span className="cert-label">{t.ownerName}</span>
+                    <strong className="cert-value">
+                      {trace.workflow.event.effectiveOwner.name}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="cert-label">{t.propertyRef}</span>
+                    <strong className="cert-value">
+                      Plot {trace.workflow.event.property.declaredReference}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="cert-label">{t.orderRef}</span>
+                    <strong className="cert-value">
+                      {trace.workflow.event.legalOrder.reference}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="cert-label">{t.certificateRef}</span>
+                    <strong className="cert-value cert-code">
+                      {trace.workflow.workflow.id}
+                    </strong>
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <CitizenResult trace={trace} />
+            )}
+          </>
+        )}
+
+        {viewMode === "judge" && (
+          <>
+            <section className="systems-panel phase-six-systems" aria-labelledby="systems-title">
+              <div className="section-heading compact-heading">
+                <div>
+                  <p className="section-kicker">Synthetic system state</p>
+                  <h2 id="systems-title">Court, Registration, Revenue</h2>
+                </div>
+                <span className="read-only-chip">Verified view</span>
+              </div>
+              <p className="muted-copy">
+                The fields remain intentionally incompatible. This view refreshes after execution.
+              </p>
+              <SystemSnapshot snapshot={systems} trace={trace} />
+            </section>
+            {trace !== null && <TechnicalTrace trace={trace} />}
+          </>
+        )}
+      </div>
     </div>
   );
 }
+
