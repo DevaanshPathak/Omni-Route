@@ -6,8 +6,8 @@ Target duration: **2½–3 minutes**, with a hard ceiling of four minutes.
 
 - Start the web and API processes.
 - Confirm the UI reports API health.
-- Reset demo state to pristine seeds.
-- Confirm the Revenue schema is on the baseline version using `owner_nm`.
+- Click **Reset demo**; confirm the status says the state was reset.
+- Confirm **Baseline contract** is selected and the active version is `revenue.mutation.request.v1`.
 - Keep the synthetic decree ready.
 - Prefer live extraction; if network/API availability is uncertain, explicitly select the labeled deterministic demo mode before the presentation.
 - Run both paths once on the presentation machine.
@@ -89,7 +89,7 @@ Say:
 
 ## Failure path — 30–40 seconds
 
-Reset the demo, then enable the Revenue schema-drift fixture. Show that `owner_nm` has become `registered_owner` and run the same decree.
+Reset the demo, select **Revenue schema drift**, wait for the visible reset confirmation, and run the same decree. Open the technical trace to show that `owner_nm` has become `registered_owner` without an approved mapping.
 
 Pause on:
 
@@ -107,6 +107,8 @@ Say:
 > The Revenue contract changed, but the approved mapping did not. Omni-Route may recognize a plausible new field, yet plausibility is not authorization. The score is below policy, so it blocks the entire workflow before any system is changed.
 
 Show the zero-adapter-call validation result or unchanged-record comparison.
+
+Before handing the screen back, click **Reset demo** once more. This restores the baseline registry and pristine Court, Registration, and Revenue records for the next run.
 
 > The important part is not that AI can suggest a mapping. It is that the system knows when a suggestion is not safe to execute.
 

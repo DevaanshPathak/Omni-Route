@@ -1,0 +1,132 @@
+{
+  "version": "interoperability.revenue-drift.v1",
+  "automaticThreshold": 0.9,
+  "relationships": [
+    {
+      "canonicalPropertyReference": "45",
+      "surveyNumber": "45/2",
+      "legalOrderReference": "ORD-123",
+      "courtOrderReference": "ORD-123",
+      "registrationPropertyId": "REG-2391",
+      "registrationDistrictCode": "BLR-R",
+      "revenueSurveyNumber": "45/2"
+    }
+  ],
+  "actions": [
+    {
+      "system": "court",
+      "operation": "dispatchOrder",
+      "schemaVersion": "court.dispatch.request.v1",
+      "schemaFile": "court.dispatch.request.v1.json",
+      "responseSchemaVersion": "court.record.response.v1",
+      "responseSchemaFile": "court.record.response.v1.json",
+      "mappings": [
+        {
+          "ruleId": "MAP-COURT-PROPERTY",
+          "sourcePath": "property.declaredReference",
+          "targetField": "property_ref",
+          "transform": "court_property_reference",
+          "rationale": "Convert the canonical property reference into the seeded Court representation."
+        },
+        {
+          "ruleId": "MAP-COURT-OWNER",
+          "sourcePath": "effectiveOwner.name",
+          "targetField": "beneficiary",
+          "transform": "identity",
+          "rationale": "The decree beneficiary is the canonical effective owner."
+        },
+        {
+          "ruleId": "MAP-COURT-STATUS",
+          "sourcePath": "type",
+          "targetField": "decree_status",
+          "transform": "event_to_dispatch_status",
+          "rationale": "The supported transfer event dispatches the issued decree."
+        }
+      ]
+    },
+    {
+      "system": "registration",
+      "operation": "recordTransfer",
+      "schemaVersion": "registration.transfer.request.v1",
+      "schemaFile": "registration.transfer.request.v1.json",
+      "responseSchemaVersion": "registration.record.response.v1",
+      "responseSchemaFile": "registration.record.response.v1.json",
+      "mappings": [
+        {
+          "ruleId": "MAP-REG-DOCUMENT",
+          "sourcePath": "legalOrder.reference",
+          "targetField": "document_no",
+          "transform": "identity",
+          "rationale": "The legal order becomes the registration instrument reference."
+        },
+        {
+          "ruleId": "MAP-REG-PROPERTY",
+          "sourcePath": "property.declaredReference",
+          "targetField": "property_id",
+          "transform": "relationship_registration_id",
+          "rationale": "Use the approved seeded property relationship."
+        },
+        {
+          "ruleId": "MAP-REG-OWNER",
+          "sourcePath": "effectiveOwner.name",
+          "targetField": "buyer_name",
+          "transform": "identity",
+          "rationale": "The canonical effective owner becomes the registered buyer."
+        },
+        {
+          "ruleId": "MAP-REG-TYPE",
+          "sourcePath": "type",
+          "targetField": "instrument_type",
+          "transform": "event_to_instrument_type",
+          "rationale": "The supported event is represented as a court-order instrument."
+        }
+      ]
+    },
+    {
+      "system": "revenue",
+      "operation": "createMutation",
+      "schemaVersion": "revenue.mutation.request.v2-drift",
+      "schemaFile": "revenue.mutation.request.v2-drift.json",
+      "responseSchemaVersion": "revenue.record.response.v1",
+      "responseSchemaFile": "revenue.record.response.v1.json",
+      "mappings": [
+        {
+          "ruleId": "MAP-REV-SURVEY",
+          "sourcePath": "property.surveyNumber",
+          "targetField": "survey_no",
+          "transform": "identity",
+          "rationale": "The canonical survey number is the Revenue record identifier."
+        },
+        {
+          "ruleId": "MAP-REV-OWNER",
+          "sourcePath": "effectiveOwner.name",
+          "targetField": "owner_nm",
+          "transform": "identity",
+          "rationale": "The approved mapping still targets the previous Revenue owner field."
+        },
+        {
+          "ruleId": "MAP-REV-MUTATION",
+          "sourcePath": "type",
+          "targetField": "mutation_required",
+          "transform": "event_to_mutation_flag",
+          "rationale": "The supported transfer event requires a Revenue mutation."
+        }
+      ],
+      "mappingCandidates": [
+        {
+          "ruleId": "CANDIDATE-REV-OWNER-V2",
+          "sourcePath": "effectiveOwner.name",
+          "targetField": "registered_owner",
+          "transform": "identity",
+          "rationale": "The renamed field is semantically plausible but has not been approved by policy.",
+          "confidence": 0.61
+        }
+      ],
+      "mappingConflict": {
+        "expectedApprovedField": "owner_nm",
+        "availableUnapprovedField": "registered_owner",
+        "candidateConfidence": 0.61
+      }
+    }
+  ]
+}

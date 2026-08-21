@@ -34,7 +34,7 @@ Express API
 For MVP speed, the mock routes live in the same API process under separate route modules. They retain explicit adapter boundaries and incompatible contracts, so they can be split later without changing the core workflow.
 
 The browser calls same-origin Next.js route handlers. These server-side handlers validate browser
-input and upstream API responses with shared runtime schemas, then proxy only the Phase 0-6
+input and upstream API responses with shared runtime schemas, then proxy only the Phase 0-7
 operations needed by the console: workflow creation, deterministic planning, validated execution,
 demo reset, and seeded-record inspection. Individual mock mutation routes, `INTERNAL_API_URL`, and
 OpenAI configuration are not exposed to client code.
@@ -365,16 +365,18 @@ GET  /api/workflows/:id/trace       canonical, graph, validation, execution, aud
 
 Inputs are strict JSON with `synthetic: true`, a maximum of 12,000 text characters, and either `kind: text` or a `.txt`/`text/plain` document whose text was extracted by the browser. Provider selection is `auto`, `openai`, or `fixture`. Auto mode chooses live extraction only when key and model are configured. Refusal, timeout, provider failure, missing configuration, unsupported fixture input, and schema-invalid output are distinct fail-closed responses.
 
-The Phase 6 browser console chains workflow creation, planning, and execution through validated
+The Phase 7 browser console chains workflow creation, planning, and execution through validated
 same-origin server routes. It presents one citizen outcome first and keeps the full Semantic Action
 Graph, mapping evidence, deterministic gates, adapter results, and audit timeline behind an
 explicit technical view. The browser never receives a direct mock-system mutation capability.
 
-Later phases add the trace and schema-drift operations:
+The demo scenario surface is explicit and resettable:
 
 ```text
 GET  /api/workflows/:id/trace       Semantic Action Graph + audit detail
-POST /api/demo/schema/revenue/drift enable/disable the drift fixture
+GET  /api/demo/schema               active registry and Revenue contract
+POST /api/demo/schema               select baseline or revenue-drift; reset runtime
+GET  /api/demo/systems              read-only three-record snapshot for invariant tests
 ```
 
 Mock-system routes are internal demo boundaries in the same process and are not called by the browser.

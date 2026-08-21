@@ -34,6 +34,7 @@ describe("home page API status", () => {
     expect(html).toContain("One event, seven controlled stages");
     expect(html).toContain("Complete ownership workflow");
     expect(html).toContain("Court, Registration, Revenue");
+    expect(html).toContain("Safe Revenue schema-drift demo");
   });
 
   it("shows a safe unavailable state when the API cannot be reached", async () => {

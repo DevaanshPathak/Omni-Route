@@ -71,6 +71,18 @@ export function buildSemanticActionGraph(
       approved: true,
       evidence: mappingEvidence(event, rule.sourcePath),
     }));
+    mappings.push(
+      ...(config.mappingCandidates ?? []).map((rule) => ({
+        ruleId: rule.ruleId,
+        sourcePath: rule.sourcePath,
+        targetField: rule.targetField,
+        transform: rule.transform,
+        rationale: rule.rationale,
+        confidence: rule.confidence,
+        approved: false,
+        evidence: mappingEvidence(event, rule.sourcePath),
+      })),
+    );
     const payload = Object.fromEntries(
       config.mappings
         .map((rule) => [
@@ -87,6 +99,13 @@ export function buildSemanticActionGraph(
       recordIdentifier: entityMatch.recordIdentifier,
       entityMatch,
       mappings,
+      mappingConflict:
+        config.mappingConflict === undefined
+          ? undefined
+          : {
+              ...config.mappingConflict,
+              requiredThreshold: registry.automaticThreshold,
+            },
       payload,
       validation: [],
       execution: { status: "NOT_STARTED" as const },

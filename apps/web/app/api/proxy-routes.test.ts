@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { POST as resetDemo } from "./demo/reset/route";
+import { POST as setSchemaMode } from "./demo/schema/route";
 import { GET as getSystems } from "./systems/route";
 import { POST as createWorkflow } from "./workflows/route";
 import { POST as executeWorkflow } from "./workflows/[workflowId]/execute/route";
@@ -103,6 +104,21 @@ describe("web-to-API proxy routes", () => {
     const response = await executeWorkflow(new Request("http://localhost/api"), {
       params: Promise.resolve({ workflowId: "not-a-workflow" }),
     });
+
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("validates the schema scenario before forwarding it", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await setSchemaMode(
+      new Request("http://localhost:3000/api/demo/schema", {
+        method: "POST",
+        body: JSON.stringify({ mode: "invented-mode" }),
+      }),
+    );
 
     expect(response.status).toBe(400);
     expect(fetchMock).not.toHaveBeenCalled();

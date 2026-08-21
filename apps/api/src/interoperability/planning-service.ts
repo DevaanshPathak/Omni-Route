@@ -18,7 +18,7 @@ export class PlanningService {
   constructor(
     private readonly runtime: CanonicalRuntimeStore,
     private readonly stores: MockSystemStores,
-    private readonly registry: InteroperabilityRegistry,
+    private readonly registry: () => InteroperabilityRegistry,
   ) {}
 
   plan(workflowId: string): WorkflowTrace | undefined {
@@ -33,6 +33,7 @@ export class PlanningService {
     }
 
     this.runtime.transitionWorkflow(workflowId, "RESOLVING");
+    const registry = this.registry();
     const resolution = resolvePropertyRecords(
       view.event,
       {
@@ -40,10 +41,10 @@ export class PlanningService {
         registration: this.stores.registration.list(),
         revenue: this.stores.revenue.list(),
       },
-      this.registry.relationships,
-      this.registry.automaticThreshold,
+      registry.relationships,
+      registry.automaticThreshold,
     );
-    const graph = buildSemanticActionGraph(workflowId, view.event, resolution, this.registry);
+    const graph = buildSemanticActionGraph(workflowId, view.event, resolution, registry);
 
     if (resolution.status === "MATCHED") {
       this.runtime.transitionWorkflow(workflowId, "MAPPING");

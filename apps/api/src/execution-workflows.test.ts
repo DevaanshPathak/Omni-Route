@@ -7,7 +7,8 @@ import { WorkflowTraceResponseSchema, type CanonicalEventProposal } from "@omni-
 
 import { createApp } from "./app.js";
 import { loadInteroperabilityRegistry } from "./interoperability/registry.js";
-import type { DepartmentAdapters } from "./workflow/adapters.js";
+import { createMockSystemStores } from "./mock-systems/stores.js";
+import { createDepartmentAdapters, type DepartmentAdapters } from "./workflow/adapters.js";
 import type { UnderstandingProvider } from "./understanding/service.js";
 
 const decreeUrl = new URL(
@@ -158,5 +159,71 @@ describe("Phase 5 deterministic workflow execution", () => {
     expect(trace.workflow.workflow.currentState).toBe("FAILED");
     expect(trace.graph.status).toBe("FAILED");
     expect(trace.graph.actions.every((action) => action.execution.status === "FAILED")).toBe(true);
+  });
+});
+
+describe("Phase 7 Revenue schema drift", () => {
+  it("blocks the aggregate workflow with zero adapter calls and zero mutations", async () => {
+    const adapters: DepartmentAdapters = { execute: vi.fn(), verify: vi.fn() };
+    const app = createApp({ adapters });
+    await request(app).post("/api/demo/schema").send({ mode: "revenue-drift" }).expect(200);
+    const before = await request(app).get("/api/demo/systems").expect(200);
+    const created = await createFixtureWorkflow(app);
+
+    const response = await request(app)
+      .post(`/api/workflows/${created.body.data.workflow.id}/execute`)
+      .expect(200);
+    const trace = WorkflowTraceResponseSchema.parse(response.body).data;
+    const revenue = trace.graph.actions.find((action) => action.system === "revenue")!;
+
+    expect(trace.workflow.workflow.currentState).toBe("HUMAN_REVIEW_REQUIRED");
+    expect(trace.graph.status).toBe("BLOCKED");
+    expect(revenue.mappingConflict).toEqual({
+      expectedApprovedField: "owner_nm",
+      availableUnapprovedField: "registered_owner",
+      candidateConfidence: 0.61,
+      requiredThreshold: 0.9,
+    });
+    expect(revenue.validation).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ ruleId: "GATE-MAPPING", outcome: "FAIL" }),
+        expect.objectContaining({ ruleId: "GATE-CONFIDENCE", outcome: "FAIL" }),
+        expect.objectContaining({ ruleId: "GATE-JSON-SCHEMA", outcome: "FAIL" }),
+      ]),
+    );
+    expect(adapters.execute).not.toHaveBeenCalled();
+    expect(adapters.verify).not.toHaveBeenCalled();
+    const after = await request(app).get("/api/demo/systems").expect(200);
+    expect(after.body).toEqual(before.body);
+  });
+
+  it("runs happy then drift consecutively after scenario reset in one process", async () => {
+    const stores = createMockSystemStores();
+    const realAdapters = createDepartmentAdapters(stores);
+    const execute = vi.fn(realAdapters.execute);
+    const adapters: DepartmentAdapters = { execute, verify: realAdapters.verify };
+    const app = createApp({ stores, adapters });
+
+    const happy = await createFixtureWorkflow(app);
+    const happyTrace = WorkflowTraceResponseSchema.parse(
+      (await request(app).post(`/api/workflows/${happy.body.data.workflow.id}/execute`).expect(200))
+        .body,
+    ).data;
+    expect(happyTrace.workflow.workflow.currentState).toBe("COMPLETED");
+    expect(execute).toHaveBeenCalledTimes(3);
+
+    await request(app).post("/api/demo/schema").send({ mode: "revenue-drift" }).expect(200);
+    const drift = await createFixtureWorkflow(app);
+    const driftTrace = WorkflowTraceResponseSchema.parse(
+      (await request(app).post(`/api/workflows/${drift.body.data.workflow.id}/execute`).expect(200))
+        .body,
+    ).data;
+
+    expect(driftTrace.workflow.workflow.currentState).toBe("HUMAN_REVIEW_REQUIRED");
+    expect(execute).toHaveBeenCalledTimes(3);
+    const snapshot = await request(app).get("/api/demo/systems").expect(200);
+    expect(snapshot.body.data.court.decree_status).toBe("ISSUED");
+    expect(snapshot.body.data.registration.buyer_name).toBe("Anita Rao");
+    expect(snapshot.body.data.revenue.owner_nm).toBe("Anita Rao");
   });
 });

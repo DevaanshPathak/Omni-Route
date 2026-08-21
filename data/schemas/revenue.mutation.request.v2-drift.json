@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "revenue.mutation.request.v2-drift",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["survey_no", "registered_owner", "mutation_required"],
+  "properties": {
+    "survey_no": { "type": "string", "minLength": 1 },
+    "registered_owner": { "type": "string", "minLength": 1 },
+    "mutation_required": { "const": true }
+  }
+}

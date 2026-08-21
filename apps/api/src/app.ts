@@ -4,11 +4,9 @@ import { ApiErrorResponseSchema, HealthResponseSchema } from "@omni-route/shared
 
 import { registerCanonicalRuntimeRoutes } from "./canonical-runtime/routes.js";
 import { CanonicalRuntimeStore } from "./canonical-runtime/runtime-store.js";
+import { registerDemoRoutes } from "./demo-routes.js";
 import { PlanningService } from "./interoperability/planning-service.js";
-import {
-  loadInteroperabilityRegistry,
-  type InteroperabilityRegistry,
-} from "./interoperability/registry.js";
+import { ActiveRegistry, type InteroperabilityRegistry } from "./interoperability/registry.js";
 import { registerInteroperabilityRoutes } from "./interoperability/routes.js";
 import { registerMockSystemRoutes } from "./mock-systems/routes.js";
 import { createMockSystemStores, type MockSystemStores } from "./mock-systems/stores.js";
@@ -62,20 +60,24 @@ export function createApp(options: AppOptions = {}): Express {
       ? createProviderResolver(process.env)
       : () => options.understandingProvider!;
   const understandingService = new UnderstandingService(runtimeStore, providerResolver);
-  const registry = options.registry ?? loadInteroperabilityRegistry();
-  const planningService = new PlanningService(runtimeStore, stores, registry);
+  const registry = new ActiveRegistry(options.registry);
+  const planningService = new PlanningService(runtimeStore, stores, () => registry.current());
   const orchestrator = new WorkflowOrchestrator(
     runtimeStore,
     planningService,
-    registry,
+    () => registry.current(),
     new DeterministicValidator(),
     options.adapters ?? createDepartmentAdapters(stores),
   );
-  const resetAll = () => {
+  const resetRuntime = () => {
     orchestrator.reset();
     planningService.reset();
     runtimeStore.reset();
     stores.reset();
+  };
+  const resetAll = () => {
+    registry.reset();
+    resetRuntime();
   };
 
   app.disable("x-powered-by");
@@ -94,6 +96,7 @@ export function createApp(options: AppOptions = {}): Express {
 
   registerMockSystemRoutes(app, stores, resetAll);
   registerCanonicalRuntimeRoutes(app, runtimeStore, resetAll);
+  registerDemoRoutes(app, stores, registry, resetRuntime);
   registerUnderstandingRoutes(app, understandingService);
   registerInteroperabilityRoutes(app, planningService);
   registerWorkflowExecutionRoutes(app, orchestrator);

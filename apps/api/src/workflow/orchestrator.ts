@@ -33,7 +33,7 @@ export class WorkflowOrchestrator {
   constructor(
     private readonly runtime: CanonicalRuntimeStore,
     private readonly planning: PlanningService,
-    private readonly registry: InteroperabilityRegistry,
+    private readonly registry: () => InteroperabilityRegistry,
     private readonly validator: DeterministicValidator,
     private readonly adapters: DepartmentAdapters,
   ) {}
@@ -47,7 +47,7 @@ export class WorkflowOrchestrator {
     }
 
     this.runtime.transitionWorkflow(workflowId, "VALIDATING");
-    const validation = this.validator.validate(trace.graph, trace.workflow.event, this.registry);
+    const validation = this.validator.validate(trace.graph, trace.workflow.event, this.registry());
     for (const action of validation.graph.actions) {
       for (const rule of action.validation) {
         this.runtime.appendValidationResult(

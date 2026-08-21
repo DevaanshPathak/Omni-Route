@@ -37,16 +37,17 @@ export default async function Home() {
           </div>
           <aside className="scope-card">
             <p className="section-kicker">Available now</p>
-            <strong>Phases 0–6</strong>
+            <strong>Phases 0–7</strong>
             <ul>
               <li>Three synthetic system APIs</li>
               <li>Canonical runtime + audit</li>
               <li>Structured AI extraction</li>
               <li>Deterministic resolve + map</li>
               <li>Validated execution + audit</li>
+              <li>Safe Revenue schema-drift demo</li>
             </ul>
             <p>
-              <b>Current:</b> complete browser happy path with an inspectable technical trace.
+              <b>Current:</b> repeatable happy and fail-closed paths with an inspectable trace.
             </p>
           </aside>
         </section>

@@ -3,9 +3,12 @@
 import {
   ApiErrorResponseSchema,
   CanonicalWorkflowResponseSchema,
+  DemoSchemaStateResponseSchema,
   SyntheticSystemSnapshotResponseSchema,
   WorkflowTraceResponseSchema,
   type CanonicalWorkflowView,
+  type DemoSchemaMode,
+  type DemoSchemaState,
   type SemanticAction,
   type SyntheticSystemSnapshot,
   type UnderstandingProviderSelection,
@@ -235,14 +238,45 @@ function ActionTrace({ action }: { action: SemanticAction }) {
         </div>
       </section>
       <section>
-        <h5>Approved field mappings</h5>
+        <h5>Field mappings and candidates</h5>
+        {action.mappingConflict !== undefined && (
+          <div className="mapping-conflict" role="alert">
+            <strong>Revenue schema mismatch detected</strong>
+            <dl>
+              <div>
+                <dt>Expected approved field</dt>
+                <dd>
+                  <code>{action.mappingConflict.expectedApprovedField}</code>
+                </dd>
+              </div>
+              <div>
+                <dt>Available unapproved field</dt>
+                <dd>
+                  <code>{action.mappingConflict.availableUnapprovedField}</code>
+                </dd>
+              </div>
+              <div>
+                <dt>Candidate score</dt>
+                <dd>{Math.round(action.mappingConflict.candidateConfidence * 100)}%</dd>
+              </div>
+              <div>
+                <dt>Required threshold</dt>
+                <dd>{Math.round(action.mappingConflict.requiredThreshold * 100)}%</dd>
+              </div>
+            </dl>
+          </div>
+        )}
         <div className="mapping-list">
           {action.mappings.map((mapping) => (
             <div key={mapping.ruleId}>
               <code>{mapping.sourcePath}</code>
               <span aria-hidden="true">→</span>
               <code>{mapping.targetField}</code>
-              <small>{mapping.transform}</small>
+              <small>
+                {mapping.approved
+                  ? `approved · ${mapping.transform}`
+                  : `unapproved candidate · ${Math.round(mapping.confidence * 100)}%`}
+              </small>
             </div>
           ))}
         </div>
@@ -393,6 +427,7 @@ export function DemoConsole() {
   const [trace, setTrace] = useState<WorkflowTrace | null>(null);
   const [systems, setSystems] = useState<SyntheticSystemSnapshot | null>(null);
   const [activeStep, setActiveStep] = useState(0);
+  const [schemaState, setSchemaState] = useState<DemoSchemaState | null>(null);
 
   const loadSystems = useCallback(async () => {
     try {
@@ -404,9 +439,52 @@ export function DemoConsole() {
       setSystems(null);
     }
   }, []);
+  const loadSchemaState = useCallback(async () => {
+    try {
+      const response = await fetch("/api/demo/schema", { cache: "no-store" });
+      const parsed = DemoSchemaStateResponseSchema.safeParse(await responseJson(response));
+      if (!response.ok || !parsed.success) throw new Error("invalid schema response");
+      setSchemaState(parsed.data.data);
+    } catch {
+      setSchemaState(null);
+    }
+  }, []);
   useEffect(() => {
     void loadSystems();
-  }, [loadSystems]);
+    void loadSchemaState();
+  }, [loadSchemaState, loadSystems]);
+
+  async function selectSchemaMode(mode: DemoSchemaMode) {
+    setRequestState("loading");
+    setSchemaState((current) => (current === null ? current : { ...current, mode }));
+    setMessage("Resetting state and loading the selected Revenue contract...");
+    try {
+      const response = await fetch("/api/demo/schema", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ mode }),
+      });
+      const body = await responseJson(response);
+      if (!response.ok) throw new Error(errorMessage(body, "Schema mode could not be changed."));
+      const parsed = DemoSchemaStateResponseSchema.safeParse(body);
+      if (!parsed.success) throw new Error("The server returned an invalid schema scenario.");
+      setSchemaState(parsed.data.data);
+      setCanonical(null);
+      setTrace(null);
+      setActiveStep(0);
+      await loadSystems();
+      setRequestState("idle");
+      setMessage(
+        mode === "baseline"
+          ? "Baseline Revenue schema enabled. Demo state reset."
+          : "Revenue schema drift enabled. Demo state reset; unsafe execution will fail closed.",
+      );
+    } catch (error) {
+      await loadSchemaState();
+      setRequestState("error");
+      setMessage(error instanceof Error ? error.message : "Schema mode could not be changed.");
+    }
+  }
 
   async function postTrace(url: string): Promise<WorkflowTrace> {
     const response = await fetch(url, { method: "POST" });
@@ -490,6 +568,7 @@ export function DemoConsole() {
       setTrace(null);
       setProvider("fixture");
       setActiveStep(0);
+      await loadSchemaState();
       await loadSystems();
       setRequestState("idle");
       setMessage("Demo state reset. Ready for another run.");
@@ -508,7 +587,7 @@ export function DemoConsole() {
             <p className="section-kicker">One citizen submission</p>
             <h2 id="workbench-title">Complete the ownership journey</h2>
           </div>
-          <span className="phase-chip">Phase 6</span>
+          <span className="phase-chip">Phase 7</span>
         </div>
         <form onSubmit={submit}>
           <label className="field-label" htmlFor="decree">
@@ -563,6 +642,57 @@ export function DemoConsole() {
                 </label>
               ))}
             </div>
+          </fieldset>
+          <fieldset className="provider-fieldset scenario-fieldset">
+            <legend>Revenue contract scenario</legend>
+            <div className="provider-grid scenario-grid">
+              <label
+                className={`provider-option ${schemaState?.mode === "baseline" ? "provider-option-selected" : ""}`}
+              >
+                <input
+                  type="radio"
+                  name="schema-mode"
+                  value="baseline"
+                  checked={schemaState?.mode === "baseline"}
+                  disabled={requestState === "loading"}
+                  onChange={() => {
+                    void selectSchemaMode("baseline");
+                  }}
+                />
+                <span>
+                  <strong>Baseline contract</strong>
+                  <small>
+                    Approved <code>owner_nm</code> mapping
+                  </small>
+                </span>
+              </label>
+              <label
+                className={`provider-option drift-option ${schemaState?.mode === "revenue-drift" ? "provider-option-selected" : ""}`}
+              >
+                <input
+                  type="radio"
+                  name="schema-mode"
+                  value="revenue-drift"
+                  checked={schemaState?.mode === "revenue-drift"}
+                  disabled={requestState === "loading"}
+                  onChange={() => {
+                    void selectSchemaMode("revenue-drift");
+                  }}
+                />
+                <span>
+                  <strong>Revenue schema drift</strong>
+                  <small>
+                    Renamed <code>registered_owner</code> is unapproved
+                  </small>
+                </span>
+              </label>
+            </div>
+            {schemaState !== null && (
+              <p className="scenario-summary">
+                Active: <strong>{schemaState.revenueSchemaVersion}</strong> · policy threshold{" "}
+                {Math.round(schemaState.automaticThreshold * 100)}%
+              </p>
+            )}
           </fieldset>
           <div className="action-row">
             <button className="primary-button" type="submit" disabled={requestState === "loading"}>

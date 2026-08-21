@@ -64,6 +64,15 @@ export const ActionExecutionSchema = z
   })
   .strict();
 
+export const MappingConflictSchema = z
+  .object({
+    expectedApprovedField: boundedText,
+    availableUnapprovedField: boundedText,
+    candidateConfidence: z.number().min(0).max(1),
+    requiredThreshold: z.number().min(0).max(1),
+  })
+  .strict();
+
 export const SemanticActionSchema = z
   .object({
     id: boundedText,
@@ -73,6 +82,7 @@ export const SemanticActionSchema = z
     recordIdentifier: boundedText.nullable(),
     entityMatch: EntityMatchSchema,
     mappings: z.array(FieldMappingSchema).min(1),
+    mappingConflict: MappingConflictSchema.optional(),
     payload: z.record(z.string(), z.unknown()),
     validation: z.array(ActionValidationSchema),
     execution: ActionExecutionSchema,
@@ -108,12 +118,30 @@ export const WorkflowTraceSchema = z
 
 export const WorkflowTraceResponseSchema = z.object({ data: WorkflowTraceSchema }).strict();
 
+export const DemoSchemaModeSchema = z.enum(["baseline", "revenue-drift"]);
+export const DemoSchemaModeRequestSchema = z.object({ mode: DemoSchemaModeSchema }).strict();
+export const DemoSchemaStateSchema = z
+  .object({
+    mode: DemoSchemaModeSchema,
+    registryVersion: boundedText,
+    revenueSchemaVersion: boundedText,
+    approvedOwnerField: boundedText,
+    availableOwnerField: boundedText,
+    candidateConfidence: z.number().min(0).max(1).nullable(),
+    automaticThreshold: z.number().min(0).max(1),
+  })
+  .strict();
+export const DemoSchemaStateResponseSchema = z.object({ data: DemoSchemaStateSchema }).strict();
+
 export type ResolutionSignal = z.infer<typeof ResolutionSignalSchema>;
 export type EntityMatch = z.infer<typeof EntityMatchSchema>;
 export type ResolutionResult = z.infer<typeof ResolutionResultSchema>;
 export type FieldMapping = z.infer<typeof FieldMappingSchema>;
 export type ActionValidation = z.infer<typeof ActionValidationSchema>;
 export type ActionExecution = z.infer<typeof ActionExecutionSchema>;
+export type MappingConflict = z.infer<typeof MappingConflictSchema>;
 export type SemanticAction = z.infer<typeof SemanticActionSchema>;
 export type InteroperabilityGraph = z.infer<typeof InteroperabilityGraphSchema>;
 export type WorkflowTrace = z.infer<typeof WorkflowTraceSchema>;
+export type DemoSchemaMode = z.infer<typeof DemoSchemaModeSchema>;
+export type DemoSchemaState = z.infer<typeof DemoSchemaStateSchema>;

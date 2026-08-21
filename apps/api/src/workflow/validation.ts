@@ -35,11 +35,15 @@ export class DeterministicValidator {
         action.mappings.filter((mapping) => mapping.approved).map((mapping) => mapping.targetField),
       );
       const schemaValidate =
-        config === undefined ? undefined : this.#ajv.compile(config.jsonSchema);
+        config === undefined
+          ? undefined
+          : (this.#ajv.getSchema(config.schemaVersion) ?? this.#ajv.compile(config.jsonSchema));
       const schemaValid = schemaValidate?.(action.payload) ?? false;
       const eligible = action.entityMatch.signals.some(
         (signal) => signal.ruleId === "RES-ELIGIBILITY" && signal.outcome === "MATCH",
       );
+      const effectiveConfidence =
+        action.mappingConflict?.candidateConfidence ?? action.entityMatch.score;
       const rules: ActionValidation[] = [
         {
           ruleId: "GATE-CANONICAL",
@@ -68,18 +72,20 @@ export class DeterministicValidator {
               ? "PASS"
               : "FAIL",
           reason:
-            config !== undefined && requiredFields.every((field) => mappedFields.has(field))
-              ? "Every required field has an approved mapping."
-              : "A required approved mapping is missing.",
+            action.mappingConflict !== undefined
+              ? `Approved field ${action.mappingConflict.expectedApprovedField} is absent from the active schema; ${action.mappingConflict.availableUnapprovedField} is only an unapproved candidate.`
+              : config !== undefined && requiredFields.every((field) => mappedFields.has(field))
+                ? "Every required field has an approved mapping."
+                : "A required approved mapping is missing.",
         },
         {
           ruleId: "GATE-CONFIDENCE",
           outcome:
-            action.entityMatch.score >= graph.automaticThreshold &&
+            effectiveConfidence >= graph.automaticThreshold &&
             !action.entityMatch.signals.some((signal) => signal.outcome === "CONFLICT")
               ? "PASS"
               : "FAIL",
-          reason: `Entity score ${action.entityMatch.score.toFixed(2)}; required ${graph.automaticThreshold.toFixed(2)}.`,
+          reason: `${action.mappingConflict === undefined ? "Entity" : "Mapping candidate"} score ${effectiveConfidence.toFixed(2)}; required ${graph.automaticThreshold.toFixed(2)}.`,
         },
         {
           ruleId: "GATE-JSON-SCHEMA",

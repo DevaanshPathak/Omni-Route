@@ -8,7 +8,7 @@ The safety boundary is deliberate: **the LLM proposes; it never executes.** Dete
 
 ## Current status
 
-Phases 0 through 6 are implemented:
+Phases 0 through 7 are implemented:
 
 - npm workspaces for a Next.js web app, Express API, and shared runtime contracts;
 - strict TypeScript, ESLint, Prettier, Tailwind CSS, and Vitest;
@@ -36,9 +36,9 @@ Phases 0 through 6 are implemented:
 - a complete browser journey with real extraction, planning, validation, execution, and verification
   progress; and
 - an expandable Semantic Action Graph showing record matches, weighted evidence, approved field
-  mappings, payloads, validation gates, adapter results, and the audit timeline.
-
-The mandatory Revenue schema-drift demo remains Phase 7. See [`docs/PHASES.md`](docs/PHASES.md).
+  mappings, payloads, validation gates, adapter results, and the audit timeline; and
+- a versioned Revenue drift contract that exposes an unapproved `registered_owner` candidate at
+  `0.61`, blocks all adapters, and preserves all three records.
 
 ## Prerequisites
 
@@ -164,13 +164,15 @@ curl http://localhost:4100/mock/court/orders/ORD-123
 
 ## Canonical workflow API
 
-Phase 2 adds a deterministic fixture seam for exercising the canonical boundary before AI extraction exists:
+The demo API includes canonical fixture, reset, and schema-scenario controls:
 
-| Method | Endpoint                        | Behavior                                       |
-| ------ | ------------------------------- | ---------------------------------------------- |
-| POST   | `/api/demo/canonical-workflows` | Create a workflow from the validated fixture   |
-| GET    | `/api/workflows/:workflowId`    | Inspect canonical state and ordered audit data |
-| POST   | `/api/demo/reset`               | Reset canonical and all three mock stores      |
+| Method | Endpoint                        | Behavior                                        |
+| ------ | ------------------------------- | ----------------------------------------------- |
+| POST   | `/api/demo/canonical-workflows` | Create a workflow from the validated fixture    |
+| GET    | `/api/workflows/:workflowId`    | Inspect canonical state and ordered audit data  |
+| POST   | `/api/demo/reset`               | Reset registry, canonical, and mock state       |
+| GET    | `/api/demo/schema`              | Inspect the active demo schema scenario         |
+| POST   | `/api/demo/schema`              | Select baseline or Revenue drift and reset data |
 
 Canonical reads contain no Court, Registration, or Revenue field names. Runtime state and ID sequences reset on process restart or either demo reset route.
 
