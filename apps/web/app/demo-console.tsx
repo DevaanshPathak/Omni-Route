@@ -75,6 +75,33 @@ const translations: Record<
     orderRef: string;
     verifiedBadge: string;
     advancedSettings: string;
+    graphTitle: string;
+    graphSubtitle: string;
+    submittedDocument: string;
+    targetBeneficiary: string;
+    dept1Title: string;
+    dept2Title: string;
+    dept3Title: string;
+    deptLabel: string;
+    matchedOrder: string;
+    orderStatus: string;
+    propertyTitleId: string;
+    registeredOwner: string;
+    taxSurveyPlot: string;
+    mutationRecord: string;
+    badgeCourt: string;
+    badgeReg: string;
+    badgeRev: string;
+    badgeBlocked: string;
+    processing: string;
+    journeyTitle: string;
+    journeySubtitle: string;
+    steps: readonly [string, string, string, string, string, string, string];
+    eventLabel: string;
+    personLabel: string;
+    propertyLabel: string;
+    orderLabel: string;
+    ownershipTransferEvent: string;
   }
 > = {
   en: {
@@ -102,6 +129,33 @@ const translations: Record<
     orderRef: "Legal Order Reference",
     verifiedBadge: "Verified Across 3 Government Departments",
     advancedSettings: "Advanced Technical & Provider Settings",
+    graphTitle: "Visual Citizen Journey",
+    graphSubtitle: "Single Event → Multi-Department Execution Flow",
+    submittedDocument: "Submitted Legal Document",
+    targetBeneficiary: "Target Beneficiary",
+    dept1Title: "Court Order Registry",
+    dept2Title: "Land Registration Office",
+    dept3Title: "Revenue & Tax Registry",
+    deptLabel: "Department",
+    matchedOrder: "Matched Order",
+    orderStatus: "Order Status",
+    propertyTitleId: "Property Title ID",
+    registeredOwner: "Registered Owner",
+    taxSurveyPlot: "Tax Survey Plot",
+    mutationRecord: "Mutation Record",
+    badgeCourt: "✓ Order Dispatched",
+    badgeReg: "✓ Land Title Updated",
+    badgeRev: "✓ Record Mutated",
+    badgeBlocked: "! Blocked for Review",
+    processing: "Processing...",
+    journeyTitle: "Citizen Journey",
+    journeySubtitle: "One event, seven controlled stages",
+    steps: ["Understand", "Discover", "Resolve", "Map", "Validate", "Execute", "Verify"],
+    eventLabel: "Event",
+    personLabel: "Person",
+    propertyLabel: "Property",
+    orderLabel: "Order",
+    ownershipTransferEvent: "Property Ownership Transfer",
   },
   hi: {
     portalTitle: "नागरिक संपत्ति हस्तांतरण पोर्टल",
@@ -128,6 +182,33 @@ const translations: Record<
     orderRef: "कानूनी आदेश संदर्भ",
     verifiedBadge: "3 सरकारी विभागों में सत्यापित",
     advancedSettings: "उन्नत प्रदाता और तकनीकी सेटिंग्स",
+    graphTitle: "दृश्य नागरिक यात्रा",
+    graphSubtitle: "एक घटना → बहु-विभाग निष्पादन प्रवाह",
+    submittedDocument: "प्रस्तुत कानूनी दस्तावेज़",
+    targetBeneficiary: "लक्षित लाभार्थी",
+    dept1Title: "न्यायालय आदेश रजिस्ट्री",
+    dept2Title: "भूमि पंजीकरण कार्यालय",
+    dept3Title: "राजस्व एवं कर रजिस्ट्री",
+    deptLabel: "विभाग",
+    matchedOrder: "मिलान किया गया आदेश",
+    orderStatus: "आदेश की स्थिति",
+    propertyTitleId: "संपत्ति शीर्षक आईडी",
+    registeredOwner: "पंजीकृत स्वामी",
+    taxSurveyPlot: "कर सर्वेक्षण भूखंड",
+    mutationRecord: "नामांतरण रिकॉर्ड",
+    badgeCourt: "✓ आदेश प्रेषित",
+    badgeReg: "✓ भूमि शीर्षक अद्यतन",
+    badgeRev: "✓ रिकॉर्ड नामांतरित",
+    badgeBlocked: "! समीक्षा के लिए अवरुद्ध",
+    processing: "प्रसंस्करणीय...",
+    journeyTitle: "नागरिक यात्रा",
+    journeySubtitle: "एक घटना, सात नियंत्रित चरण",
+    steps: ["समझें", "खोजें", "हल करें", "मानचित्रित करें", "सत्यापित करें", "निष्पादित करें", "जांचें"],
+    eventLabel: "घटना",
+    personLabel: "व्यक्ति",
+    propertyLabel: "संपत्ति",
+    orderLabel: "आदेश",
+    ownershipTransferEvent: "संपत्ति स्वामित्व हस्तांतरण",
   },
   kn: {
     portalTitle: "ನಾಗರಿಕ ಆಸ್ತಿ ವರ್ಗಾವಣೆ ಪೋರ್ಟಲ್",
@@ -154,6 +235,41 @@ const translations: Record<
     orderRef: "ಕಾನೂನು ಆದೇಶ ಉಲ್ಲೇಖ",
     verifiedBadge: "3 ಸರ್ಕಾರಿ ಇಲಾಖೆಗಳಲ್ಲಿ ದೃಢೀಕರಿಸಲಾಗಿದೆ",
     advancedSettings: "ಸುಧಾರಿತ ತಾಂತ್ರಿಕ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    graphTitle: "ದೃಶ್ಯ ನಾಗರಿಕ ಪ್ರಯಾಣ",
+    graphSubtitle: "ಒಂದೇ ಘಟನೆ → ಬಹು-ಇಲಾಖೆ ಕಾರ್ಯಗತಗೊಳಿಸುವಿಕೆ ಹರಿವು",
+    submittedDocument: "ಸಲ್ಲಿಸಿದ ಕಾನೂನು ದಾಖಲೆ",
+    targetBeneficiary: "ಗುರಿಯ ಫಲಾನುಭವಿ",
+    dept1Title: "ನ್ಯಾಯಾಲಯದ ಆದೇಶ ನೋಂದಣಿ",
+    dept2Title: "ಭೂ ನೋಂದಣಿ ಕಚೇರಿ",
+    dept3Title: "ಕಂದಾಯ ಮತ್ತು ತೆರಿಗೆ ನೋಂದಣಿ",
+    deptLabel: "ಇಲಾಖೆ",
+    matchedOrder: "ಹೊಂದಾಣಿಕೆಯಾದ ಆದೇಶ",
+    orderStatus: "ಆದೇಶದ ಸ್ಥಿತಿ",
+    propertyTitleId: "ಆಸ್ತಿ ಶೀರ್ಷಿಕೆ ಐಡಿ",
+    registeredOwner: "ನೋಂದಾಯಿತ ಮಾಲೀಕರು",
+    taxSurveyPlot: "ತೆರಿಗೆ ಸಮೀಕ್ಷೆ ನಿವೇಶನ",
+    mutationRecord: "ರೂಪಾಂತರ ದಾಖಲೆ",
+    badgeCourt: "✓ ಆದೇಶ ರವಾನಿಸಲಾಗಿದೆ",
+    badgeReg: "✓ ಭೂ ಶೀರ್ಷಿಕೆ ನವೀಕರಿಸಲಾಗಿದೆ",
+    badgeRev: "✓ ದಾಖಲೆ ನವೀಕರಿಸಲಾಗಿದೆ",
+    badgeBlocked: "! ಪರಿಶೀಲನೆಗೆ ತಡೆಯಲಾಗಿದೆ",
+    processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
+    journeyTitle: "ನಾಗರಿಕ ಪ್ರಯಾಣ",
+    journeySubtitle: "ಒಂದೇ ಘಟನೆ, ಏಳು ನಿಯಂತ್ರಿತ ಹಂತಗಳು",
+    steps: [
+      "ಅರ್ಥಮಾಡಿಕೊಳ್ಳಿ",
+      "ಕಂಡುಹಿಡಿಯಿರಿ",
+      "ಪರಿಹರಿಸಿ",
+      "ಮ್ಯಾಪ್ ಮಾಡಿ",
+      "ದೃಢೀಕರಿಸಿ",
+      "ಕಾರ್ಯಗತಗೊಳಿಸಿ",
+      "ಪರಿಶೀಲಿಸಿ",
+    ],
+    eventLabel: "ಘಟನೆ",
+    personLabel: "ವ್ಯಕ್ತಿ",
+    propertyLabel: "ಆಸ್ತಿ",
+    orderLabel: "ಆದೇಶ",
+    ownershipTransferEvent: "ಆಸ್ತಿ ಮಾಲೀಕತ್ವ ವರ್ಗಾವಣೆ",
   },
 };
 
@@ -247,9 +363,11 @@ function SystemSnapshot({
 function JourneyProgress({
   activeStep,
   trace,
+  steps,
 }: {
   activeStep: number;
   trace: WorkflowTrace | null;
+  steps: readonly [string, string, string, string, string, string, string];
 }) {
   const reachedStates = new Set(
     trace?.workflow.workflow.transitions.map((transition) => transition.to),
@@ -278,7 +396,7 @@ function JourneyProgress({
           : -1;
   return (
     <ol className="journey-progress" aria-label="Workflow progress">
-      {journeySteps.map((step, index) => {
+      {steps.map((step, index) => {
         const state =
           index === failedStep
             ? "failed"
@@ -424,7 +542,13 @@ function ActionTrace({ action }: { action: SemanticAction }) {
   );
 }
 
-function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
+function CitizenJourneyGraph({
+  trace,
+  t,
+}: {
+  trace: WorkflowTrace;
+  t: (typeof translations)[Language];
+}) {
   const completed = trace.workflow.workflow.currentState === "COMPLETED";
   const review = trace.workflow.workflow.currentState === "HUMAN_REVIEW_REQUIRED";
   const courtAction = trace.graph.actions.find((action) => action.system === "court");
@@ -434,17 +558,19 @@ function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
   return (
     <section className="citizen-graph-card" aria-label="Citizen Journey Flow Graph">
       <header className="citizen-graph-header">
-        <p className="section-kicker">Visual Citizen Journey</p>
-        <h3>Single Event → Multi-Department Execution Flow</h3>
+        <p className="section-kicker">{t.graphTitle}</p>
+        <h3>{t.graphSubtitle}</h3>
       </header>
 
       <div className="citizen-graph-root-node">
         <div className="node-icon">📄</div>
         <div>
-          <small>Submitted Legal Document</small>
-          <strong>Order {trace.workflow.event.legalOrder.reference}</strong>
+          <small>{t.submittedDocument}</small>
+          <strong>
+            {t.orderRef}: {trace.workflow.event.legalOrder.reference}
+          </strong>
           <span className="node-subtext">
-            Property Plot {trace.workflow.event.property.declaredReference} · Target Beneficiary:{" "}
+            {t.propertyRef}: Plot {trace.workflow.event.property.declaredReference} · {t.targetBeneficiary}:{" "}
             {trace.workflow.event.effectiveOwner.name}
           </span>
         </div>
@@ -463,19 +589,19 @@ function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
           <div className="node-card-header">
             <span className="node-emoji">⚖️</span>
             <div>
-              <small>Department 1</small>
-              <h4>Court Order Registry</h4>
+              <small>{t.deptLabel} 1</small>
+              <h4>{t.dept1Title}</h4>
             </div>
           </div>
           <div className="node-details">
             <div>
-              <span>Matched Order:</span>
+              <span>{t.matchedOrder}:</span>
               <strong>
                 {courtAction?.recordIdentifier ?? trace.workflow.event.legalOrder.reference}
               </strong>
             </div>
             <div>
-              <span>Order Status:</span>
+              <span>{t.orderStatus}:</span>
               <strong>
                 {courtAction?.execution.status === "VERIFIED" ? "DISPATCHED" : "PENDING"}
               </strong>
@@ -483,10 +609,10 @@ function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
           </div>
           <div className="node-status-badge">
             {courtAction?.execution.status === "VERIFIED"
-              ? "✓ Order Dispatched"
+              ? t.badgeCourt
               : review
-                ? "! Blocked for Review"
-                : "Processing"}
+                ? t.badgeBlocked
+                : t.processing}
           </div>
         </div>
 
@@ -496,17 +622,17 @@ function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
           <div className="node-card-header">
             <span className="node-emoji">📜</span>
             <div>
-              <small>Department 2</small>
-              <h4>Land Registration Office</h4>
+              <small>{t.deptLabel} 2</small>
+              <h4>{t.dept2Title}</h4>
             </div>
           </div>
           <div className="node-details">
             <div>
-              <span>Property Title ID:</span>
+              <span>{t.propertyTitleId}:</span>
               <strong>{regAction?.recordIdentifier ?? "REG-2391"}</strong>
             </div>
             <div>
-              <span>Registered Owner:</span>
+              <span>{t.registeredOwner}:</span>
               <strong>
                 {completed ? trace.workflow.event.effectiveOwner.name : "Anita Rao"}
               </strong>
@@ -514,10 +640,10 @@ function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
           </div>
           <div className="node-status-badge">
             {regAction?.execution.status === "VERIFIED"
-              ? "✓ Land Title Updated"
+              ? t.badgeReg
               : review
-                ? "! Blocked for Review"
-                : "Processing"}
+                ? t.badgeBlocked
+                : t.processing}
           </div>
         </div>
 
@@ -527,28 +653,28 @@ function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
           <div className="node-card-header">
             <span className="node-emoji">🏛️</span>
             <div>
-              <small>Department 3</small>
-              <h4>Revenue & Tax Registry</h4>
+              <small>{t.deptLabel} 3</small>
+              <h4>{t.dept3Title}</h4>
             </div>
           </div>
           <div className="node-details">
             <div>
-              <span>Tax Survey Plot:</span>
+              <span>{t.taxSurveyPlot}:</span>
               <strong>{revAction?.recordIdentifier ?? "45/2"}</strong>
             </div>
             <div>
-              <span>Mutation Record:</span>
+              <span>{t.mutationRecord}:</span>
               <strong>
-                {completed ? `Mutated (${trace.workflow.event.effectiveOwner.name})` : "Pending"}
+                {completed ? `${trace.workflow.event.effectiveOwner.name}` : "Pending"}
               </strong>
             </div>
           </div>
           <div className="node-status-badge">
             {revAction?.execution.status === "VERIFIED"
-              ? "✓ Record Mutated"
+              ? t.badgeRev
               : review
-                ? "! Blocked for Review"
-                : "Processing"}
+                ? t.badgeBlocked
+                : t.processing}
           </div>
         </div>
       </div>
@@ -1051,31 +1177,31 @@ export function DemoConsole() {
         </section>
 
         <aside className="journey-panel" aria-labelledby="journey-title">
-          <p className="section-kicker">Citizen journey</p>
-          <h2 id="journey-title">One event, seven controlled stages</h2>
-          <JourneyProgress activeStep={activeStep} trace={trace} />
+          <p className="section-kicker">{t.journeyTitle}</p>
+          <h2 id="journey-title">{t.journeySubtitle}</h2>
+          <JourneyProgress activeStep={activeStep} trace={trace} steps={t.steps} />
           {event !== undefined ? (
             <dl className="understanding-card">
               <div>
-                <dt>Event</dt>
-                <dd>Ownership transfer</dd>
+                <dt>{t.eventLabel}</dt>
+                <dd>{t.ownershipTransferEvent}</dd>
               </div>
               <div>
-                <dt>Person</dt>
+                <dt>{t.personLabel}</dt>
                 <dd>{event.effectiveOwner.name}</dd>
               </div>
               <div>
-                <dt>Property</dt>
+                <dt>{t.propertyLabel}</dt>
                 <dd>{event.property.declaredReference}</dd>
               </div>
               <div>
-                <dt>Order</dt>
+                <dt>{t.orderLabel}</dt>
                 <dd>{event.legalOrder.reference}</dd>
               </div>
             </dl>
           ) : (
             <p className="muted-copy">
-              Submit the decree to see the canonical event and deterministic route.
+              {t.uploadSubtext}
             </p>
           )}
           <div className="system-route">
@@ -1087,7 +1213,7 @@ export function DemoConsole() {
 
         {trace !== null && (
           <>
-            <CitizenJourneyGraph trace={trace} />
+            <CitizenJourneyGraph trace={trace} t={t} />
             {trace.workflow.workflow.currentState === "COMPLETED" ? (
               <section className="citizen-certificate-card">
                 <header className="certificate-header">
