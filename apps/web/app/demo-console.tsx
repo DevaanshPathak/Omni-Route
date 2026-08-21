@@ -38,15 +38,6 @@ const providerOptions: ReadonlyArray<{
   { value: "openai", label: "Live model", note: "Requires server configuration" },
 ];
 
-const journeySteps = [
-  "Understand",
-  "Discover",
-  "Resolve",
-  "Map",
-  "Validate",
-  "Execute",
-  "Verify",
-] as const;
 type RequestState = "idle" | "loading" | "success" | "error";
 type Language = "en" | "hi" | "kn";
 type ViewMode = "citizen" | "judge";
