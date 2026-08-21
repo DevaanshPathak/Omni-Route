@@ -358,6 +358,9 @@ Phase 3 implements the input boundary:
 ```text
 POST /api/workflows                 extract synthetic text/document text
                                     → canonical workflow at UNDERSTANDING_COMPLETE
+POST /api/workflows/:id/plan        deterministic resolution + mapping preview
+POST /api/workflows/:id/execute     aggregate gate + adapters + verification
+GET  /api/workflows/:id/trace       canonical, graph, validation, execution, audit
 ```
 
 Inputs are strict JSON with `synthetic: true`, a maximum of 12,000 text characters, and either `kind: text` or a `.txt`/`text/plain` document whose text was extracted by the browser. Provider selection is `auto`, `openai`, or `fixture`. Auto mode chooses live extraction only when key and model are configured. Refusal, timeout, provider failure, missing configuration, unsupported fixture input, and schema-invalid output are distinct fail-closed responses.

@@ -162,6 +162,14 @@ export class CanonicalRuntimeStore {
     return structuredClone(result);
   }
 
+  appendAuditEvent(
+    workflowId: string,
+    input: Omit<AuditEvent, "id" | "workflowId" | "sequence" | "timestamp">,
+  ): void {
+    this.#requireWorkflow(workflowId);
+    this.#appendAudit(workflowId, input);
+  }
+
   getWorkflowView(workflowId: string): CanonicalWorkflowView | undefined {
     if (!this.#workflows.has(workflowId)) return undefined;
     return this.#requireWorkflowView(workflowId);

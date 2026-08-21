@@ -1,4 +1,5 @@
 import {
+  InteroperabilityGraphSchema,
   SemanticActionGraphSnapshotSchema,
   WorkflowTraceSchema,
   type InteroperabilityGraph,
@@ -90,6 +91,15 @@ export class PlanningService {
     const graph = this.#graphs.get(workflowId);
     if (workflow === undefined || graph === undefined) return undefined;
     return WorkflowTraceSchema.parse({ workflow, graph: structuredClone(graph) });
+  }
+
+  updateGraph(workflowId: string, input: InteroperabilityGraph): WorkflowTrace {
+    const graph = InteroperabilityGraphSchema.parse(input);
+    if (graph.workflowId !== workflowId || !this.#graphs.has(workflowId)) {
+      throw new Error("Workflow graph cannot be updated before planning.");
+    }
+    this.#graphs.set(workflowId, structuredClone(graph));
+    return this.getTrace(workflowId)!;
   }
 
   reset(): void {

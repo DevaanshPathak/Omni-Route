@@ -8,7 +8,7 @@ The safety boundary is deliberate: **the LLM proposes; it never executes.** Dete
 
 ## Current status
 
-Phases 0 through 4 are implemented:
+Phases 0 through 5 are implemented:
 
 - npm workspaces for a Next.js web app, Express API, and shared runtime contracts;
 - strict TypeScript, ESLint, Prettier, Tailwind CSS, and Vitest;
@@ -29,8 +29,12 @@ Phases 0 through 4 are implemented:
 - versioned request/response JSON Schemas and approved canonical-to-target mapping metadata;
 - deterministic three-system entity resolution with named weighted signals and a `0.90` gate; and
 - a non-executable Semantic Action Graph preview and inspectable workflow trace API.
+- an ordered deterministic preflight across canonical, entity, mapping, confidence, JSON Schema,
+  business-rule, and execution-policy checks;
+- isolated Court, Registration, and Revenue adapters that receive only validated actions; and
+- sequential execution, response verification, partial-failure reporting, and append-only audit.
 
-Deterministic validation and execution begin in Phase 5. See [`docs/PHASES.md`](docs/PHASES.md).
+The complete citizen and technical visualization is Phase 6. See [`docs/PHASES.md`](docs/PHASES.md).
 
 ## Prerequisites
 
@@ -198,6 +202,14 @@ Phase 4 adds two non-executable planning endpoints:
 Planning loads committed versioned JSON Schemas and approved mapping rules from `data/schemas/`.
 The resolver exposes legal-order, property-relationship, location, and operation-eligibility score
 components. Phase 4 previews payloads but never invokes a mock mutation route.
+
+## Validated execution API
+
+`POST /api/workflows/:workflowId/execute` plans the workflow when needed, runs the complete
+aggregate preflight, and calls adapters only if every action passes. It returns the same trace
+contract with validation results, sanitized request/response summaries, adapter results, and the
+terminal workflow state. Known preflight failures return a blocked workflow outcome with zero
+adapter calls; runtime failures report `FAILED` or `PARTIALLY_COMPLETED`.
 
 ## Documentation
 

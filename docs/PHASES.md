@@ -204,6 +204,8 @@ The API returns a complete, inspectable, non-executable Semantic Action Graph fo
 
 ## Phase 5 — Validation, orchestration, adapters, and audit
 
+**Status:** Complete — aggregate preflight and verified execution API tested on 2026-08-21.
+
 **Estimate:** 5–6 hours
 
 ### Goal

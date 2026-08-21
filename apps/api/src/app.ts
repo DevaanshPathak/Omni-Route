@@ -5,13 +5,20 @@ import { ApiErrorResponseSchema, HealthResponseSchema } from "@omni-route/shared
 import { registerCanonicalRuntimeRoutes } from "./canonical-runtime/routes.js";
 import { CanonicalRuntimeStore } from "./canonical-runtime/runtime-store.js";
 import { PlanningService } from "./interoperability/planning-service.js";
-import { loadInteroperabilityRegistry } from "./interoperability/registry.js";
+import {
+  loadInteroperabilityRegistry,
+  type InteroperabilityRegistry,
+} from "./interoperability/registry.js";
 import { registerInteroperabilityRoutes } from "./interoperability/routes.js";
 import { registerMockSystemRoutes } from "./mock-systems/routes.js";
 import { createMockSystemStores, type MockSystemStores } from "./mock-systems/stores.js";
 import { createProviderResolver } from "./understanding/provider-resolver.js";
 import { registerUnderstandingRoutes } from "./understanding/routes.js";
 import { UnderstandingService, type UnderstandingProvider } from "./understanding/service.js";
+import { createDepartmentAdapters, type DepartmentAdapters } from "./workflow/adapters.js";
+import { WorkflowOrchestrator } from "./workflow/orchestrator.js";
+import { registerWorkflowExecutionRoutes } from "./workflow/routes.js";
+import { DeterministicValidator } from "./workflow/validation.js";
 
 const API_VERSION = "0.1.0";
 
@@ -42,6 +49,8 @@ type AppOptions = {
   stores?: MockSystemStores;
   runtimeStore?: CanonicalRuntimeStore;
   understandingProvider?: UnderstandingProvider;
+  adapters?: DepartmentAdapters;
+  registry?: InteroperabilityRegistry;
 };
 
 export function createApp(options: AppOptions = {}): Express {
@@ -53,8 +62,17 @@ export function createApp(options: AppOptions = {}): Express {
       ? createProviderResolver(process.env)
       : () => options.understandingProvider!;
   const understandingService = new UnderstandingService(runtimeStore, providerResolver);
-  const planningService = new PlanningService(runtimeStore, stores, loadInteroperabilityRegistry());
+  const registry = options.registry ?? loadInteroperabilityRegistry();
+  const planningService = new PlanningService(runtimeStore, stores, registry);
+  const orchestrator = new WorkflowOrchestrator(
+    runtimeStore,
+    planningService,
+    registry,
+    new DeterministicValidator(),
+    options.adapters ?? createDepartmentAdapters(stores),
+  );
   const resetAll = () => {
+    orchestrator.reset();
     planningService.reset();
     runtimeStore.reset();
     stores.reset();
@@ -78,6 +96,7 @@ export function createApp(options: AppOptions = {}): Express {
   registerCanonicalRuntimeRoutes(app, runtimeStore, resetAll);
   registerUnderstandingRoutes(app, understandingService);
   registerInteroperabilityRoutes(app, planningService);
+  registerWorkflowExecutionRoutes(app, orchestrator);
 
   app.use((_request, response) => {
     response.status(404).json(

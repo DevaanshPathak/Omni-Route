@@ -60,6 +60,7 @@ export const ActionExecutionSchema = z
     status: z.enum(["NOT_STARTED", "EXECUTED", "VERIFIED", "FAILED"]),
     requestSummary: boundedText.optional(),
     responseSummary: boundedText.optional(),
+    response: z.record(z.string(), z.unknown()).optional(),
   })
   .strict();
 
