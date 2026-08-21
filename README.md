@@ -8,7 +8,7 @@ The safety boundary is deliberate: **the LLM proposes; it never executes.** Dete
 
 ## Current status
 
-Phases 0 through 5 are implemented:
+Phases 0 through 6 are implemented:
 
 - npm workspaces for a Next.js web app, Express API, and shared runtime contracts;
 - strict TypeScript, ESLint, Prettier, Tailwind CSS, and Vitest;
@@ -28,13 +28,17 @@ Phases 0 through 5 are implemented:
   result and audit timeline, and reading the three seeded system records without mutating them.
 - versioned request/response JSON Schemas and approved canonical-to-target mapping metadata;
 - deterministic three-system entity resolution with named weighted signals and a `0.90` gate; and
-- a non-executable Semantic Action Graph preview and inspectable workflow trace API.
+- a non-executable Semantic Action Graph preview and inspectable workflow trace API;
 - an ordered deterministic preflight across canonical, entity, mapping, confidence, JSON Schema,
   business-rule, and execution-policy checks;
 - isolated Court, Registration, and Revenue adapters that receive only validated actions; and
-- sequential execution, response verification, partial-failure reporting, and append-only audit.
+- sequential execution, response verification, partial-failure reporting, and append-only audit;
+- a complete browser journey with real extraction, planning, validation, execution, and verification
+  progress; and
+- an expandable Semantic Action Graph showing record matches, weighted evidence, approved field
+  mappings, payloads, validation gates, adapter results, and the audit timeline.
 
-The complete citizen and technical visualization is Phase 6. See [`docs/PHASES.md`](docs/PHASES.md).
+The mandatory Revenue schema-drift demo remains Phase 7. See [`docs/PHASES.md`](docs/PHASES.md).
 
 ## Prerequisites
 
@@ -56,13 +60,11 @@ Open:
 - API health: <http://localhost:4100/health>
 
 At <http://localhost:3000>, the decree is preloaded. Keep **Deterministic fixture** selected and
-choose **Extract canonical event** for the repeatable offline path, or choose **Auto** / **Live
-model** to exercise the server-side OpenAI configuration. The result shows canonical entities,
-workflow state, extraction provenance, audit events, and raw JSON. **Reset demo** clears all
-in-memory workflow state and restores the seeded mock records.
-
-The current console is deliberately read-only toward Court, Registration, and Revenue. It tests
-Phases 0-3; deterministic resolution, mapping, validation, and execution remain later phases.
+choose **Complete ownership workflow** for the repeatable offline path, or choose **Auto** / **Live
+model** to exercise the server-side OpenAI configuration. The browser performs extraction,
+deterministic planning, aggregate validation, adapter execution, response verification, and audit.
+Open the technical trace to inspect every score, mapping, payload, gate, and synthetic response.
+**Reset demo** clears all in-memory workflow state and restores the seeded mock records.
 
 The root development command builds the shared package, then starts only the web and API processes. When OpenAI configuration is absent, `provider: "auto"` uses the deterministic fixture provider.
 
@@ -91,8 +93,13 @@ To change host ports, copy `.env.example` to `.env` and edit `WEB_PORT` or `API_
 | `npm run lint`              | Lint every workspace                                   |
 | `npm run typecheck`         | Type-check every workspace                             |
 | `npm test`                  | Run all Vitest suites                                  |
+| `npm run test:browser`      | Run the browser happy path against a running local app |
 | `npm run format:check`      | Check repository formatting                            |
 | `docker compose up --build` | Build and run the production container topology        |
+
+Start the app with `npm run dev` or Compose before running `npm run test:browser`. The browser test
+uses the deterministic provider, completes the full workflow, opens the technical trace, and resets
+the demo afterward.
 
 ## Repository structure
 

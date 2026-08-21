@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { POST as resetDemo } from "./demo/reset/route";
 import { GET as getSystems } from "./systems/route";
 import { POST as createWorkflow } from "./workflows/route";
+import { POST as executeWorkflow } from "./workflows/[workflowId]/execute/route";
 
 describe("web-to-API proxy routes", () => {
   afterEach(() => {
@@ -93,5 +94,17 @@ describe("web-to-API proxy routes", () => {
       expect.stringContaining("/api/demo/reset"),
       expect.objectContaining({ method: "POST" }),
     );
+  });
+
+  it("rejects an invalid workflow operation path before contacting the backend", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await executeWorkflow(new Request("http://localhost/api"), {
+      params: Promise.resolve({ workflowId: "not-a-workflow" }),
+    });
+
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

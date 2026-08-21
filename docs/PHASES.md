@@ -243,6 +243,8 @@ One API call can drive a validated fixture end-to-end, and tests prove that unsa
 
 ## Phase 6 — Citizen journey and technical visualization
 
+**Status:** Complete — browser happy path and technical trace verified on 2026-08-21.
+
 **Estimate:** 5–6 hours
 
 ### Goal

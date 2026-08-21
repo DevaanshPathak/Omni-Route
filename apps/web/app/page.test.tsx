@@ -28,12 +28,12 @@ describe("home page API status", () => {
 
     expect(html).toContain("API connected");
     expect(html).toContain("omni-route-api");
-    expect(html).toContain("Test the understanding pipeline");
+    expect(html).toContain("Complete the ownership journey");
     expect(html).toContain("Synthetic court decree");
     expect(html).toContain("Deterministic fixture");
-    expect(html).toContain("Inspect seeded system records");
-    expect(html).toContain("Understanding only");
-    expect(html).toContain("No departmental record is changed");
+    expect(html).toContain("One event, seven controlled stages");
+    expect(html).toContain("Complete ownership workflow");
+    expect(html).toContain("Court, Registration, Revenue");
   });
 
   it("shows a safe unavailable state when the API cannot be reached", async () => {
@@ -42,6 +42,6 @@ describe("home page API status", () => {
     const html = renderToStaticMarkup(await Home());
 
     expect(html).toContain("API unavailable");
-    expect(html).toContain("Test the understanding pipeline");
+    expect(html).toContain("Complete the ownership journey");
   });
 });

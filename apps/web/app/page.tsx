@@ -28,23 +28,25 @@ export default async function Home() {
           <div>
             <p className="hero-kicker">Semantic interoperability · Local MVP console</p>
             <h1>
-              From decree to <em>canonical meaning.</em>
+              One event. <em>One verified outcome.</em>
             </h1>
             <p className="hero-copy">
-              Paste a synthetic property decree, run fixture or live structured extraction, and
-              inspect the canonical workflow created before any deterministic execution is allowed.
+              Submit a synthetic property decree once. Omni-Route resolves three incompatible
+              records, validates every action, executes the safe workflow, and returns one result.
             </p>
           </div>
           <aside className="scope-card">
             <p className="section-kicker">Available now</p>
-            <strong>Phases 0–3</strong>
+            <strong>Phases 0–6</strong>
             <ul>
               <li>Three synthetic system APIs</li>
               <li>Canonical runtime + audit</li>
               <li>Structured AI extraction</li>
+              <li>Deterministic resolve + map</li>
+              <li>Validated execution + audit</li>
             </ul>
             <p>
-              <b>Next:</b> deterministic entity resolution and semantic mapping.
+              <b>Current:</b> complete browser happy path with an inspectable technical trace.
             </p>
           </aside>
         </section>
