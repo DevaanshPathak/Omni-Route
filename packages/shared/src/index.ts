@@ -59,6 +59,7 @@ export {
   RevenueMutationRequestSchema,
   RevenueRecordResponseSchema,
   RevenueRecordSchema,
+  SyntheticSystemSnapshotResponseSchema,
   SystemNameSchema,
 } from "./mock-systems.js";
 export type {
@@ -68,5 +69,6 @@ export type {
   RegistrationTransferRequest,
   RevenueMutationRequest,
   RevenueRecord,
+  SyntheticSystemSnapshot,
   SystemName,
 } from "./mock-systems.js";

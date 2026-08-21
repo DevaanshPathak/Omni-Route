@@ -33,6 +33,12 @@ Express API
 
 For MVP speed, the mock routes live in the same API process under separate route modules. They retain explicit adapter boundaries and incompatible contracts, so they can be split later without changing the core workflow.
 
+The browser calls same-origin Next.js route handlers. These server-side handlers validate browser
+input and upstream API responses with shared runtime schemas, then proxy only the Phase 0-3
+operations needed by the console: workflow creation, demo reset, and read-only seeded-record
+inspection. Mock mutation routes, `INTERNAL_API_URL`, and OpenAI configuration are not exposed to
+client code.
+
 The web and API processes can run directly through npm or as two stateless Docker containers. Containerization changes packaging, not the application boundaries: the synthetic mock routes remain modules inside the API container.
 
 ## 3. Probabilistic/deterministic boundary
@@ -355,6 +361,10 @@ POST /api/workflows                 extract synthetic text/document text
 ```
 
 Inputs are strict JSON with `synthetic: true`, a maximum of 12,000 text characters, and either `kind: text` or a `.txt`/`text/plain` document whose text was extracted by the browser. Provider selection is `auto`, `openai`, or `fixture`. Auto mode chooses live extraction only when key and model are configured. Refusal, timeout, provider failure, missing configuration, unsupported fixture input, and schema-invalid output are distinct fail-closed responses.
+
+The Phase 0-3 browser console presents the canonical result and audit timeline but does not expose
+mock-system mutation controls. Department resolution, mapping, validation, and execution remain
+unavailable until their deterministic phases are implemented.
 
 Later phases add the trace and schema-drift operations:
 

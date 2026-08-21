@@ -22,8 +22,10 @@ Phases 0 through 3 are implemented:
 - an in-memory canonical runtime with guarded state transitions and append-only audit access; and
 - fixture-backed canonical workflow create/inspect endpoints with a shared demo reset;
 - server-only OpenAI Responses API extraction with strict Structured Outputs;
-- bounded synthetic text and extracted plain-text document inputs; and
-- an automatic deterministic fixture fallback for tests and key-free demos.
+- bounded synthetic text and extracted plain-text document inputs;
+- an automatic deterministic fixture fallback for tests and key-free demos; and
+- an interactive browser console for testing text or `.txt` extraction, inspecting the canonical
+  result and audit timeline, and reading the three seeded system records without mutating them.
 
 Deterministic entity resolution and semantic mapping begin in Phase 4. See [`docs/PHASES.md`](docs/PHASES.md).
 
@@ -45,6 +47,15 @@ Open:
 
 - Web: <http://localhost:3000>
 - API health: <http://localhost:4100/health>
+
+At <http://localhost:3000>, the decree is preloaded. Keep **Deterministic fixture** selected and
+choose **Extract canonical event** for the repeatable offline path, or choose **Auto** / **Live
+model** to exercise the server-side OpenAI configuration. The result shows canonical entities,
+workflow state, extraction provenance, audit events, and raw JSON. **Reset demo** clears all
+in-memory workflow state and restores the seeded mock records.
+
+The current console is deliberately read-only toward Court, Registration, and Revenue. It tests
+Phases 0-3; deterministic resolution, mapping, validation, and execution remain later phases.
 
 The root development command builds the shared package, then starts only the web and API processes. When OpenAI configuration is absent, `provider: "auto"` uses the deterministic fixture provider.
 
@@ -106,6 +117,9 @@ docker-compose.yml      Local production-style topology
 | `OPENAI_API_KEY`    | API extraction service        | unset                   | Server-side only                          |
 | `OPENAI_BASE_URL`   | API extraction service        | OpenAI SDK default      | Optional OpenAI-compatible API base URL   |
 | `OPENAI_MODEL_NAME` | API extraction service        | unset                   | Required with the key for live extraction |
+
+Browser requests use same-origin Next.js route handlers. `INTERNAL_API_URL` and all OpenAI
+configuration remain server-side and are not shipped in the browser bundle.
 
 ## Synthetic API contracts
 

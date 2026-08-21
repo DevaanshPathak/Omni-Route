@@ -71,6 +71,19 @@ export const RegistrationRecordResponseSchema = z
   .strict();
 export const RevenueRecordResponseSchema = z.object({ data: RevenueRecordSchema }).strict();
 
+export const SyntheticSystemSnapshotResponseSchema = z
+  .object({
+    data: z
+      .object({
+        court: CourtRecordSchema,
+        registration: RegistrationRecordSchema,
+        revenue: RevenueRecordSchema,
+        readOnly: z.literal(true),
+      })
+      .strict(),
+  })
+  .strict();
+
 export const ResetResponseSchema = z
   .object({
     data: z
@@ -119,4 +132,5 @@ export type CourtDispatchRequest = z.infer<typeof CourtDispatchRequestSchema>;
 export type RegistrationRecord = z.infer<typeof RegistrationRecordSchema>;
 export type RegistrationTransferRequest = z.infer<typeof RegistrationTransferRequestSchema>;
 export type RevenueRecord = z.infer<typeof RevenueRecordSchema>;
+export type SyntheticSystemSnapshot = z.infer<typeof SyntheticSystemSnapshotResponseSchema>["data"];
 export type RevenueMutationRequest = z.infer<typeof RevenueMutationRequestSchema>;
