@@ -424,6 +424,138 @@ function ActionTrace({ action }: { action: SemanticAction }) {
   );
 }
 
+function CitizenJourneyGraph({ trace }: { trace: WorkflowTrace }) {
+  const completed = trace.workflow.workflow.currentState === "COMPLETED";
+  const review = trace.workflow.workflow.currentState === "HUMAN_REVIEW_REQUIRED";
+  const courtAction = trace.graph.actions.find((action) => action.system === "court");
+  const regAction = trace.graph.actions.find((action) => action.system === "registration");
+  const revAction = trace.graph.actions.find((action) => action.system === "revenue");
+
+  return (
+    <section className="citizen-graph-card" aria-label="Citizen Journey Flow Graph">
+      <header className="citizen-graph-header">
+        <p className="section-kicker">Visual Citizen Journey</p>
+        <h3>Single Event → Multi-Department Execution Flow</h3>
+      </header>
+
+      <div className="citizen-graph-root-node">
+        <div className="node-icon">📄</div>
+        <div>
+          <small>Submitted Legal Document</small>
+          <strong>Order {trace.workflow.event.legalOrder.reference}</strong>
+          <span className="node-subtext">
+            Property Plot {trace.workflow.event.property.declaredReference} · Target Beneficiary:{" "}
+            {trace.workflow.event.effectiveOwner.name}
+          </span>
+        </div>
+      </div>
+
+      <div className="citizen-graph-connectors" aria-hidden="true">
+        <div className="connector-line" />
+        <div className="connector-line" />
+        <div className="connector-line" />
+      </div>
+
+      <div className="citizen-graph-nodes-grid">
+        <div
+          className={`citizen-node-card node-${courtAction?.execution.status.toLowerCase() ?? "pending"}`}
+        >
+          <div className="node-card-header">
+            <span className="node-emoji">⚖️</span>
+            <div>
+              <small>Department 1</small>
+              <h4>Court Order Registry</h4>
+            </div>
+          </div>
+          <div className="node-details">
+            <div>
+              <span>Matched Order:</span>
+              <strong>
+                {courtAction?.recordIdentifier ?? trace.workflow.event.legalOrder.reference}
+              </strong>
+            </div>
+            <div>
+              <span>Order Status:</span>
+              <strong>
+                {courtAction?.execution.status === "VERIFIED" ? "DISPATCHED" : "PENDING"}
+              </strong>
+            </div>
+          </div>
+          <div className="node-status-badge">
+            {courtAction?.execution.status === "VERIFIED"
+              ? "✓ Order Dispatched"
+              : review
+                ? "! Blocked for Review"
+                : "Processing"}
+          </div>
+        </div>
+
+        <div
+          className={`citizen-node-card node-${regAction?.execution.status.toLowerCase() ?? "pending"}`}
+        >
+          <div className="node-card-header">
+            <span className="node-emoji">📜</span>
+            <div>
+              <small>Department 2</small>
+              <h4>Land Registration Office</h4>
+            </div>
+          </div>
+          <div className="node-details">
+            <div>
+              <span>Property Title ID:</span>
+              <strong>{regAction?.recordIdentifier ?? "REG-2391"}</strong>
+            </div>
+            <div>
+              <span>Registered Owner:</span>
+              <strong>
+                {completed ? trace.workflow.event.effectiveOwner.name : "Anita Rao"}
+              </strong>
+            </div>
+          </div>
+          <div className="node-status-badge">
+            {regAction?.execution.status === "VERIFIED"
+              ? "✓ Land Title Updated"
+              : review
+                ? "! Blocked for Review"
+                : "Processing"}
+          </div>
+        </div>
+
+        <div
+          className={`citizen-node-card node-${revAction?.execution.status.toLowerCase() ?? "pending"}`}
+        >
+          <div className="node-card-header">
+            <span className="node-emoji">🏛️</span>
+            <div>
+              <small>Department 3</small>
+              <h4>Revenue & Tax Registry</h4>
+            </div>
+          </div>
+          <div className="node-details">
+            <div>
+              <span>Tax Survey Plot:</span>
+              <strong>{revAction?.recordIdentifier ?? "45/2"}</strong>
+            </div>
+            <div>
+              <span>Mutation Record:</span>
+              <strong>
+                {completed ? `Mutated (${trace.workflow.event.effectiveOwner.name})` : "Pending"}
+              </strong>
+            </div>
+          </div>
+          <div className="node-status-badge">
+            {revAction?.execution.status === "VERIFIED"
+              ? "✓ Record Mutated"
+              : review
+                ? "! Blocked for Review"
+                : "Processing"}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function TechnicalTrace({ trace }: { trace: WorkflowTrace }) {
   return (
     <details className="technical-details">
@@ -955,6 +1087,7 @@ export function DemoConsole() {
 
         {trace !== null && (
           <>
+            <CitizenJourneyGraph trace={trace} />
             {trace.workflow.workflow.currentState === "COMPLETED" ? (
               <section className="citizen-certificate-card">
                 <header className="certificate-header">

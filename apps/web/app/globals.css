@@ -1445,3 +1445,164 @@ input:focus-visible {
   }
 }
 
+/* Citizen Journey Flow Graph Styles */
+.citizen-graph-card {
+  grid-column: 1 / -1;
+  border: 1px solid rgb(23 62 49 / 16%);
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 85%);
+  padding: 1.5rem 1.8rem;
+  box-shadow: 0 16px 50px rgb(30 67 53 / 8%);
+  backdrop-filter: blur(16px);
+}
+
+.citizen-graph-header h3 {
+  margin: 0.2rem 0 1rem;
+  color: #173e31;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.citizen-graph-root-node {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 580px;
+  margin: 0 auto;
+  border: 2px solid #173e31;
+  border-radius: 1rem;
+  background: #f4f8f5;
+  padding: 0.9rem 1.25rem;
+}
+
+.node-icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #173e31;
+  color: #ffffff;
+  font-size: 1.3rem;
+}
+
+.citizen-graph-root-node small {
+  display: block;
+  color: #5c746b;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.citizen-graph-root-node strong {
+  display: block;
+  color: #173e31;
+  font-size: 1.05rem;
+}
+
+.node-subtext {
+  display: block;
+  margin-top: 0.15rem;
+  color: #40594f;
+  font-size: 0.78rem;
+}
+
+.citizen-graph-connectors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  height: 2.2rem;
+  margin: 0.25rem 0;
+}
+
+.connector-line {
+  width: 2px;
+  height: 100%;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #173e31 0%, rgb(23 62 49 / 20%) 100%);
+}
+
+.citizen-graph-nodes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.citizen-node-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgb(23 62 49 / 14%);
+  border-radius: 1.15rem;
+  background: #fbfaf6;
+  padding: 1.15rem;
+}
+
+.node-verified {
+  border-color: #239367;
+  background: #f1f9f4;
+}
+
+.node-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.node-emoji {
+  font-size: 1.5rem;
+}
+
+.node-card-header small {
+  color: #687a73;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.node-card-header h4 {
+  margin: 0.15rem 0 0;
+  color: #173e31;
+  font-size: 0.96rem;
+}
+
+.node-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 70%);
+  font-size: 0.78rem;
+}
+
+.node-details span {
+  color: #61736b;
+}
+
+.node-details strong {
+  color: #173e31;
+  margin-left: 0.3rem;
+}
+
+.node-status-badge {
+  text-align: center;
+  border-radius: 999px;
+  background: #239367;
+  padding: 0.4rem 0.75rem;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .citizen-graph-nodes-grid {
+    grid-template-columns: 1fr;
+  }
+  .citizen-graph-connectors {
+    display: none;
+  }
+}
+
+
