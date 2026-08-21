@@ -93,6 +93,8 @@ The app remains runnable, each synthetic system works on its own, and its behavi
 
 ## Phase 2 — Canonical model and runtime store
 
+**Status:** Complete — verified locally and with Docker Compose on 2026-08-21.
+
 **Estimate:** 2–3 hours
 
 ### Goal

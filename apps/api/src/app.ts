@@ -2,6 +2,8 @@ import express, { type ErrorRequestHandler, type Express } from "express";
 
 import { ApiErrorResponseSchema, HealthResponseSchema } from "@omni-route/shared";
 
+import { registerCanonicalRuntimeRoutes } from "./canonical-runtime/routes.js";
+import { CanonicalRuntimeStore } from "./canonical-runtime/runtime-store.js";
 import { registerMockSystemRoutes } from "./mock-systems/routes.js";
 import { createMockSystemStores, type MockSystemStores } from "./mock-systems/stores.js";
 
@@ -32,11 +34,17 @@ const apiErrorHandler: ErrorRequestHandler = (error, _request, response, next) =
 
 type AppOptions = {
   stores?: MockSystemStores;
+  runtimeStore?: CanonicalRuntimeStore;
 };
 
 export function createApp(options: AppOptions = {}): Express {
   const app = express();
   const stores = options.stores ?? createMockSystemStores();
+  const runtimeStore = options.runtimeStore ?? new CanonicalRuntimeStore();
+  const resetAll = () => {
+    runtimeStore.reset();
+    stores.reset();
+  };
 
   app.disable("x-powered-by");
   app.use(express.json({ limit: "1mb" }));
@@ -52,7 +60,8 @@ export function createApp(options: AppOptions = {}): Express {
     response.status(200).json(health);
   });
 
-  registerMockSystemRoutes(app, stores);
+  registerMockSystemRoutes(app, stores, resetAll);
+  registerCanonicalRuntimeRoutes(app, runtimeStore, resetAll);
 
   app.use((_request, response) => {
     response.status(404).json(

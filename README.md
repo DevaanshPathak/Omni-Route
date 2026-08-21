@@ -8,7 +8,7 @@ The safety boundary is deliberate: **the LLM proposes; it never executes.** Dete
 
 ## Current status
 
-Phases 0 and 1 are implemented:
+Phases 0 through 2 are implemented:
 
 - npm workspaces for a Next.js web app, Express API, and shared runtime contracts;
 - strict TypeScript, ESLint, Prettier, Tailwind CSS, and Vitest;
@@ -17,9 +17,12 @@ Phases 0 and 1 are implemented:
 - Docker Compose for a one-command local deployment;
 - three independent Court, Registration, and Revenue mock APIs;
 - versioned synthetic JSON seeds copied into resettable in-memory stores; and
-- happy, conflict, missing-record, and synthetic decree fixtures.
+- happy, conflict, missing-record, and synthetic decree fixtures;
+- strict canonical Person, Property, Document, Event, workflow, validation, graph, and audit contracts;
+- an in-memory canonical runtime with guarded state transitions and append-only audit access; and
+- fixture-backed canonical workflow create/inspect endpoints with a shared demo reset.
 
-The canonical model and workflow behavior begin in Phase 2. See [`docs/PHASES.md`](docs/PHASES.md).
+AI understanding begins in Phase 3. See [`docs/PHASES.md`](docs/PHASES.md).
 
 ## Prerequisites
 
@@ -82,6 +85,7 @@ data/
   schemas/              Department schemas and mappings from Phase 4 onward
   seeds/                Versioned Court, Registration, and Revenue records
 fixtures/
+  canonical/            Validated canonical event fixture
   documents/            Synthetic court-decree input
   scenarios/            Happy, conflict, and missing-record manifests
 docs/                   Product, architecture, phase, and demo guidance
@@ -96,7 +100,7 @@ docker-compose.yml      Local production-style topology
 | `PORT`             | Individual production process | app-specific            | Compose supplies 3000/4000               |
 | `WEB_PORT`         | Docker Compose                | `3000`                  | Host port only                           |
 | `API_PORT`         | Docker Compose                | `4100`                  | Host port only                           |
-| `OPENAI_API_KEY`   | Future API extraction service | unset                   | Server-side only; unused through Phase 1 |
+| `OPENAI_API_KEY`   | Future API extraction service | unset                   | Server-side only; unused through Phase 2 |
 
 ## Synthetic API contracts
 
@@ -124,6 +128,18 @@ curl http://localhost:4100/mock/court/orders/ORD-123
 ```
 
 `POST /mock/reset` restores fresh in-memory copies of all committed seeds. Runtime updates never rewrite the files in `data/seeds/`.
+
+## Canonical workflow API
+
+Phase 2 adds a deterministic fixture seam for exercising the canonical boundary before AI extraction exists:
+
+| Method | Endpoint                        | Behavior                                       |
+| ------ | ------------------------------- | ---------------------------------------------- |
+| POST   | `/api/demo/canonical-workflows` | Create a workflow from the validated fixture   |
+| GET    | `/api/workflows/:workflowId`    | Inspect canonical state and ordered audit data |
+| POST   | `/api/demo/reset`               | Reset canonical and all three mock stores      |
+
+Canonical reads contain no Court, Registration, or Revenue field names. Runtime state and ID sequences reset on process restart or either demo reset route.
 
 ## Documentation
 

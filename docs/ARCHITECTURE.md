@@ -53,14 +53,14 @@ The web and API processes can run directly through npm or as two stateless Docke
                  DETERMINISTIC
 ┌─────────────────────────────────────────┐
 │ Parse and canonical-schema validation   │
-│ Workflow routing                         │
-│ Candidate lookup and weighted scoring    │
-│ Approved semantic mapping rules          │
-│ JSON Schema and entity validation        │
-│ Business rules and confidence threshold  │
-│ Execution policy                         │
-│ Adapter calls and response verification  │
-│ Audit recording                          │
+│ Workflow routing                        │
+│ Candidate lookup and weighted scoring   │
+│ Approved semantic mapping rules         │
+│ JSON Schema and entity validation       │
+│ Business rules and confidence threshold │
+│ Execution policy                        │
+│ Adapter calls and response verification │
+│ Audit recording                         │
 └─────────────────────────────────────────┘
 ```
 
@@ -136,6 +136,10 @@ type EvidenceRef = {
 
 Runtime validation is required when the extraction response enters the canonical layer; TypeScript types alone are insufficient.
 
+Phase 2 implements these strict schemas in the shared package. The API keeps separate in-memory maps for canonical people, properties, documents, and events, while workflow views return a cloned event aggregate. Target-shaped unknown fields are rejected at the canonical boundary.
+
+Workflow records contain a deterministic `WRK-000001`-style ID, current state, revision, timestamps, and an ordered transition history. The runtime permits only declared state transitions. Semantic Action Graph snapshots and validation results are append-only collections for a workflow; audit events receive per-workflow sequence numbers and are exposed only through cloned reads.
+
 ## 6. Synthetic systems and adapters
 
 The three systems intentionally describe equivalent concepts differently and may use different identifiers for the same property.
@@ -194,7 +198,7 @@ These routes are synthetic demonstrations, not representations of real governmen
 
 Every request body is validated against a strict Zod contract at the HTTP boundary. Successful responses use a `{ "data": ... }` envelope. Invalid requests and missing records use a stable JSON error envelope; cross-system payload reuse fails validation because unknown fields are rejected and required target fields are absent.
 
-`POST /mock/reset` restores all three stores from their startup snapshots without modifying the seed files. The update operations are deterministic set operations and are idempotent for the same payload; cross-system orchestration remains outside Phase 1.
+`POST /mock/reset` restores all three stores from their startup snapshots without modifying the seed files and clears the Phase 2 canonical runtime. The update operations are deterministic set operations and are idempotent for the same payload; cross-system orchestration remains outside Phase 2.
 
 ## 7. Entity resolution
 
@@ -330,14 +334,20 @@ The fixture must prove that no Court, Registration, or Revenue mutation occurred
 
 ## 15. API surface
 
-The exact route shapes are finalized during implementation, but the planned public workflow surface is intentionally small:
+The implemented Phase 2 fixture and inspection surface is intentionally small:
 
 ```text
 GET  /health                         Phase 0 service health contract
-POST /api/workflows                 create from text or synthetic upload
+POST /api/demo/canonical-workflows  create from validated canonical fixture
 GET  /api/workflows/:id             citizen-facing state/result
-GET  /api/workflows/:id/trace       Semantic Action Graph + audit detail
 POST /api/demo/reset                reload pristine seed state
+```
+
+Later phases add the input/extraction, trace, and schema-drift operations:
+
+```text
+POST /api/workflows                 create from text or synthetic upload
+GET  /api/workflows/:id/trace       Semantic Action Graph + audit detail
 POST /api/demo/schema/revenue/drift enable/disable the drift fixture
 ```
 
@@ -359,7 +369,7 @@ API container (Express)
 
 - `apps/web/Dockerfile` produces a Next.js standalone runtime image.
 - `apps/api/Dockerfile` produces a production-dependency API image.
-- The API image includes `data/` and `fixtures/`; only `data/seeds/` is read at runtime in Phase 1.
+- The API image includes `data/` and `fixtures/`; Phase 2 reads `data/seeds/` and the validated canonical event fixture at runtime.
 - `docker-compose.yml` publishes the web and health endpoints, waits for API health before starting the web service, and passes the internal API URL server-side.
 - Both containers run as the unprivileged `node` user and handle their normal process signals through Compose `init`.
 - Runtime state remains ephemeral. Recreating the API container resets it by design.

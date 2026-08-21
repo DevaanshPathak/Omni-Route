@@ -1,6 +1,37 @@
 export { HealthResponseSchema } from "./health.js";
 export type { HealthResponse } from "./health.js";
 export {
+  AuditEventSchema,
+  CanonicalDocumentSchema,
+  CanonicalEventSchema,
+  CanonicalPersonSchema,
+  CanonicalPropertySchema,
+  CanonicalWorkflowResponseSchema,
+  CanonicalWorkflowViewSchema,
+  DemoResetResponseSchema,
+  EvidenceRefSchema,
+  SemanticActionGraphSnapshotSchema,
+  SemanticGraphEdgeSchema,
+  SemanticGraphNodeSchema,
+  ValidationResultSchema,
+  WorkflowSchema,
+  WorkflowStateSchema,
+  WorkflowTransitionSchema,
+} from "./canonical.js";
+export type {
+  AuditEvent,
+  CanonicalDocument,
+  CanonicalEvent,
+  CanonicalPerson,
+  CanonicalProperty,
+  CanonicalWorkflowView,
+  EvidenceRef,
+  SemanticActionGraphSnapshot,
+  ValidationResult,
+  Workflow,
+  WorkflowState,
+} from "./canonical.js";
+export {
   ApiErrorResponseSchema,
   CourtDispatchRequestSchema,
   CourtRecordResponseSchema,
