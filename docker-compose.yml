@@ -8,6 +8,8 @@ services:
     environment:
       NODE_ENV: production
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_MODEL_NAME: ${OPENAI_MODEL_NAME:-}
       PORT: 4000
     init: true
     ports:

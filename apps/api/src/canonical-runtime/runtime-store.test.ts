@@ -16,6 +16,11 @@ const event: CanonicalEvent = {
     source: "synthetic_text",
     evidence: [{ source: "DOC-0001", field: "legal_order.reference", value: "ORD-123" }],
   },
+  interpretation: {
+    provider: "fixture",
+    model: "fixture-v1",
+    promptVersion: "property-transfer-extraction.v1",
+  },
   evidence: [{ source: "DOC-0001", field: "effective_owner.name", value: "Raju" }],
 };
 

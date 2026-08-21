@@ -6,6 +6,9 @@ import { registerCanonicalRuntimeRoutes } from "./canonical-runtime/routes.js";
 import { CanonicalRuntimeStore } from "./canonical-runtime/runtime-store.js";
 import { registerMockSystemRoutes } from "./mock-systems/routes.js";
 import { createMockSystemStores, type MockSystemStores } from "./mock-systems/stores.js";
+import { createProviderResolver } from "./understanding/provider-resolver.js";
+import { registerUnderstandingRoutes } from "./understanding/routes.js";
+import { UnderstandingService, type UnderstandingProvider } from "./understanding/service.js";
 
 const API_VERSION = "0.1.0";
 
@@ -35,12 +38,18 @@ const apiErrorHandler: ErrorRequestHandler = (error, _request, response, next) =
 type AppOptions = {
   stores?: MockSystemStores;
   runtimeStore?: CanonicalRuntimeStore;
+  understandingProvider?: UnderstandingProvider;
 };
 
 export function createApp(options: AppOptions = {}): Express {
   const app = express();
   const stores = options.stores ?? createMockSystemStores();
   const runtimeStore = options.runtimeStore ?? new CanonicalRuntimeStore();
+  const providerResolver =
+    options.understandingProvider === undefined
+      ? createProviderResolver(process.env)
+      : () => options.understandingProvider!;
+  const understandingService = new UnderstandingService(runtimeStore, providerResolver);
   const resetAll = () => {
     runtimeStore.reset();
     stores.reset();
@@ -62,6 +71,7 @@ export function createApp(options: AppOptions = {}): Express {
 
   registerMockSystemRoutes(app, stores, resetAll);
   registerCanonicalRuntimeRoutes(app, runtimeStore, resetAll);
+  registerUnderstandingRoutes(app, understandingService);
 
   app.use((_request, response) => {
     response.status(404).json(

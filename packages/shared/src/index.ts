@@ -10,6 +10,7 @@ export {
   CanonicalWorkflowViewSchema,
   DemoResetResponseSchema,
   EvidenceRefSchema,
+  InterpretationProvenanceSchema,
   SemanticActionGraphSnapshotSchema,
   SemanticGraphEdgeSchema,
   SemanticGraphNodeSchema,
@@ -26,11 +27,26 @@ export type {
   CanonicalProperty,
   CanonicalWorkflowView,
   EvidenceRef,
+  InterpretationProvenance,
   SemanticActionGraphSnapshot,
   ValidationResult,
   Workflow,
   WorkflowState,
 } from "./canonical.js";
+export {
+  CanonicalEventProposalSchema,
+  UnderstandingErrorCodeSchema,
+  UnderstandingInputSchema,
+  UnderstandingProviderSelectionSchema,
+  UnderstandingRequestSchema,
+} from "./understanding.js";
+export type {
+  CanonicalEventProposal,
+  UnderstandingErrorCode,
+  UnderstandingInput,
+  UnderstandingProviderSelection,
+  UnderstandingRequest,
+} from "./understanding.js";
 export {
   ApiErrorResponseSchema,
   CourtDispatchRequestSchema,

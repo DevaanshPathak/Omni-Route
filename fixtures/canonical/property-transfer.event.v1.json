@@ -25,6 +25,11 @@
       }
     ]
   },
+  "interpretation": {
+    "provider": "fixture",
+    "model": "fixture-v1",
+    "promptVersion": "property-transfer-extraction.v1"
+  },
   "evidence": [
     {
       "source": "DOC-0001",

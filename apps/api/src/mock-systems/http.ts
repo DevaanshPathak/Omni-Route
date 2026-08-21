@@ -1,7 +1,7 @@
 import type { Response } from "express";
 import type { ZodError } from "zod";
 
-import { ApiErrorResponseSchema } from "@omni-route/shared";
+import { ApiErrorResponseSchema, type UnderstandingErrorCode } from "@omni-route/shared";
 
 export function sendInvalidRequest(
   response: Response,
@@ -26,6 +26,19 @@ export function sendNotFound(response: Response, message: string): Response {
   return response.status(404).json(
     ApiErrorResponseSchema.parse({
       error: { code: "NOT_FOUND", message },
+    }),
+  );
+}
+
+export function sendApiError(
+  response: Response,
+  status: number,
+  code: UnderstandingErrorCode,
+  message: string,
+): Response {
+  return response.status(status).json(
+    ApiErrorResponseSchema.parse({
+      error: { code, message },
     }),
   );
 }

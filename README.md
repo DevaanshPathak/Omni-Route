@@ -8,7 +8,7 @@ The safety boundary is deliberate: **the LLM proposes; it never executes.** Dete
 
 ## Current status
 
-Phases 0 through 2 are implemented:
+Phases 0 through 3 are implemented:
 
 - npm workspaces for a Next.js web app, Express API, and shared runtime contracts;
 - strict TypeScript, ESLint, Prettier, Tailwind CSS, and Vitest;
@@ -20,15 +20,18 @@ Phases 0 through 2 are implemented:
 - happy, conflict, missing-record, and synthetic decree fixtures;
 - strict canonical Person, Property, Document, Event, workflow, validation, graph, and audit contracts;
 - an in-memory canonical runtime with guarded state transitions and append-only audit access; and
-- fixture-backed canonical workflow create/inspect endpoints with a shared demo reset.
+- fixture-backed canonical workflow create/inspect endpoints with a shared demo reset;
+- server-only OpenAI Responses API extraction with strict Structured Outputs;
+- bounded synthetic text and extracted plain-text document inputs; and
+- an automatic deterministic fixture fallback for tests and key-free demos.
 
-AI understanding begins in Phase 3. See [`docs/PHASES.md`](docs/PHASES.md).
+Deterministic entity resolution and semantic mapping begin in Phase 4. See [`docs/PHASES.md`](docs/PHASES.md).
 
 ## Prerequisites
 
 Choose either:
 
-- Node.js 20.9 or newer plus npm; or
+- Node.js 22 or newer plus npm; or
 - Docker with Docker Compose.
 
 ## Run locally
@@ -43,7 +46,7 @@ Open:
 - Web: <http://localhost:3000>
 - API health: <http://localhost:4100/health>
 
-The root development command builds the shared package, then starts only the web and API processes. `OPENAI_API_KEY` is reserved for Phase 3 and is not needed yet.
+The root development command builds the shared package, then starts only the web and API processes. When OpenAI configuration is absent, `provider: "auto"` uses the deterministic fixture provider.
 
 ## Run with Docker
 
@@ -94,13 +97,15 @@ docker-compose.yml      Local production-style topology
 
 ## Configuration
 
-| Variable           | Used by                       | Default                 | Notes                                    |
-| ------------------ | ----------------------------- | ----------------------- | ---------------------------------------- |
-| `INTERNAL_API_URL` | Next.js server                | `http://localhost:4100` | Compose sets this to `http://api:4000`   |
-| `PORT`             | Individual production process | app-specific            | Compose supplies 3000/4000               |
-| `WEB_PORT`         | Docker Compose                | `3000`                  | Host port only                           |
-| `API_PORT`         | Docker Compose                | `4100`                  | Host port only                           |
-| `OPENAI_API_KEY`   | Future API extraction service | unset                   | Server-side only; unused through Phase 2 |
+| Variable            | Used by                       | Default                 | Notes                                     |
+| ------------------- | ----------------------------- | ----------------------- | ----------------------------------------- |
+| `INTERNAL_API_URL`  | Next.js server                | `http://localhost:4100` | Compose sets this to `http://api:4000`    |
+| `PORT`              | Individual production process | app-specific            | Compose supplies 3000/4000                |
+| `WEB_PORT`          | Docker Compose                | `3000`                  | Host port only                            |
+| `API_PORT`          | Docker Compose                | `4100`                  | Host port only                            |
+| `OPENAI_API_KEY`    | API extraction service        | unset                   | Server-side only                          |
+| `OPENAI_BASE_URL`   | API extraction service        | OpenAI SDK default      | Optional OpenAI-compatible API base URL   |
+| `OPENAI_MODEL_NAME` | API extraction service        | unset                   | Required with the key for live extraction |
 
 ## Synthetic API contracts
 
@@ -140,6 +145,29 @@ Phase 2 adds a deterministic fixture seam for exercising the canonical boundary 
 | POST   | `/api/demo/reset`               | Reset canonical and all three mock stores      |
 
 Canonical reads contain no Court, Registration, or Revenue field names. Runtime state and ID sequences reset on process restart or either demo reset route.
+
+## AI understanding API
+
+`POST /api/workflows` accepts only explicitly synthetic input. It supports pasted text or browser-extracted UTF-8 text from a `.txt` document; raw uploads and OCR remain outside Phase 3.
+
+```json
+{
+  "synthetic": true,
+  "provider": "auto",
+  "input": {
+    "kind": "text",
+    "text": "Transfer synthetic property 45 to Raju under order ORD-123."
+  }
+}
+```
+
+Provider modes:
+
+- `auto`: use live extraction when both key and model are configured; otherwise use the committed fixture.
+- `openai`: require live configuration and fail clearly when it is missing.
+- `fixture`: always use the deterministic ORD-123 demo proposal.
+
+Successful extraction creates a canonical workflow in `UNDERSTANDING_COMPLETE`. Provider output is validated as an untrusted proposal, converted to deterministic canonical IDs, and validated again against the canonical event schema. This phase does not resolve entities, map schemas, or call mock-system updates.
 
 ## Documentation
 

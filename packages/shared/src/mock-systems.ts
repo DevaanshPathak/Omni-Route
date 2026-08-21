@@ -86,7 +86,17 @@ export const ApiErrorResponseSchema = z
   .object({
     error: z
       .object({
-        code: z.enum(["INVALID_REQUEST", "NOT_FOUND", "INTERNAL_ERROR"]),
+        code: z.enum([
+          "INVALID_REQUEST",
+          "NOT_FOUND",
+          "INTERNAL_ERROR",
+          "MISSING_CONFIGURATION",
+          "PROVIDER_FAILURE",
+          "PROVIDER_REFUSAL",
+          "PROVIDER_TIMEOUT",
+          "INVALID_MODEL_OUTPUT",
+          "UNSUPPORTED_FIXTURE_INPUT",
+        ]),
         message: z.string().min(1),
         issues: z
           .array(

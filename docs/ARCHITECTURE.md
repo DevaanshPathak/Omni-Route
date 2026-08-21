@@ -140,6 +140,10 @@ Phase 2 implements these strict schemas in the shared package. The API keeps sep
 
 Workflow records contain a deterministic `WRK-000001`-style ID, current state, revision, timestamps, and an ordered transition history. The runtime permits only declared state transitions. Semantic Action Graph snapshots and validation results are append-only collections for a workflow; audit events receive per-workflow sequence numbers and are exposed only through cloned reads.
 
+Phase 3 adds a narrower `CanonicalEventProposal` contract for model output. The proposal contains extracted canonical concepts but no internal IDs, target-system fields, operations, or tools. Deterministic code hashes the normalized synthetic input to assign canonical IDs, attaches the prompt/provider provenance and evidence source, parses the full `CanonicalEvent`, and only then creates a workflow.
+
+The live provider uses the server-side OpenAI Responses API with `responses.parse` and `zodTextFormat`, following the [official Structured Outputs guidance](https://developers.openai.com/api/docs/guides/structured-outputs). The client receives no tool definitions. A fixture provider implements the same interface for automated tests and repeatable demos.
+
 ## 6. Synthetic systems and adapters
 
 The three systems intentionally describe equivalent concepts differently and may use different identifiers for the same property.
@@ -343,10 +347,18 @@ GET  /api/workflows/:id             citizen-facing state/result
 POST /api/demo/reset                reload pristine seed state
 ```
 
-Later phases add the input/extraction, trace, and schema-drift operations:
+Phase 3 implements the input boundary:
 
 ```text
-POST /api/workflows                 create from text or synthetic upload
+POST /api/workflows                 extract synthetic text/document text
+                                    → canonical workflow at UNDERSTANDING_COMPLETE
+```
+
+Inputs are strict JSON with `synthetic: true`, a maximum of 12,000 text characters, and either `kind: text` or a `.txt`/`text/plain` document whose text was extracted by the browser. Provider selection is `auto`, `openai`, or `fixture`. Auto mode chooses live extraction only when key and model are configured. Refusal, timeout, provider failure, missing configuration, unsupported fixture input, and schema-invalid output are distinct fail-closed responses.
+
+Later phases add the trace and schema-drift operations:
+
+```text
 GET  /api/workflows/:id/trace       Semantic Action Graph + audit detail
 POST /api/demo/schema/revenue/drift enable/disable the drift fixture
 ```
@@ -369,7 +381,8 @@ API container (Express)
 
 - `apps/web/Dockerfile` produces a Next.js standalone runtime image.
 - `apps/api/Dockerfile` produces a production-dependency API image.
-- The API image includes `data/` and `fixtures/`; Phase 2 reads `data/seeds/` and the validated canonical event fixture at runtime.
+- The API image includes `data/` and `fixtures/`; Phase 3 reads the synthetic records and deterministic extraction fixtures at runtime.
+- Compose passes `OPENAI_API_KEY`, `OPENAI_BASE_URL`, and `OPENAI_MODEL_NAME` only to the API container. They are never available to the browser bundle.
 - `docker-compose.yml` publishes the web and health endpoints, waits for API health before starting the web service, and passes the internal API URL server-side.
 - Both containers run as the unprivileged `node` user and handle their normal process signals through Compose `init`.
 - Runtime state remains ephemeral. Recreating the API container resets it by design.

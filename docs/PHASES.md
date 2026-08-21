@@ -129,6 +129,8 @@ The API can create and inspect a fixture-backed canonical workflow entirely inde
 
 ## Phase 3 — AI understanding
 
+**Status:** Complete — fixture and Docker paths verified on 2026-08-21; live generation remains dependent on configured provider availability.
+
 **Estimate:** 4–5 hours
 
 ### Goal

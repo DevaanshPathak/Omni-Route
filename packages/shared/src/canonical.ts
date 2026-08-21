@@ -47,6 +47,14 @@ export const CanonicalDocumentSchema = z
   })
   .strict();
 
+export const InterpretationProvenanceSchema = z
+  .object({
+    provider: z.enum(["openai", "fixture"]),
+    model: nonEmptyText,
+    promptVersion: nonEmptyText,
+  })
+  .strict();
+
 export const CanonicalEventSchema = z
   .object({
     id: canonicalId("EVT"),
@@ -54,6 +62,7 @@ export const CanonicalEventSchema = z
     effectiveOwner: CanonicalPersonSchema,
     property: CanonicalPropertySchema,
     legalOrder: CanonicalDocumentSchema,
+    interpretation: InterpretationProvenanceSchema,
     evidence: z.array(EvidenceRefSchema).min(1),
   })
   .strict();
@@ -189,6 +198,7 @@ export type EvidenceRef = z.infer<typeof EvidenceRefSchema>;
 export type CanonicalPerson = z.infer<typeof CanonicalPersonSchema>;
 export type CanonicalProperty = z.infer<typeof CanonicalPropertySchema>;
 export type CanonicalDocument = z.infer<typeof CanonicalDocumentSchema>;
+export type InterpretationProvenance = z.infer<typeof InterpretationProvenanceSchema>;
 export type CanonicalEvent = z.infer<typeof CanonicalEventSchema>;
 export type WorkflowState = z.infer<typeof WorkflowStateSchema>;
 export type Workflow = z.infer<typeof WorkflowSchema>;

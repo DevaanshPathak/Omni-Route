@@ -1,4 +1,8 @@
+import dotenv from "dotenv";
+
 import { createApp } from "./app.js";
+
+dotenv.config({ path: new URL("../../../.env", import.meta.url), quiet: true });
 
 const DEFAULT_PORT = 4100;
 const portValue = Number.parseInt(process.env.PORT ?? String(DEFAULT_PORT), 10);
