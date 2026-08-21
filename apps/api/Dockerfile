@@ -25,6 +25,8 @@ COPY packages/shared/package.json packages/shared/package.json
 RUN npm ci --omit=dev --workspace @omni-route/shared --workspace @omni-route/api
 COPY --from=build --chown=node:node /app/apps/api/dist apps/api/dist
 COPY --from=build --chown=node:node /app/packages/shared/dist packages/shared/dist
+COPY --chown=node:node data data
+COPY --chown=node:node fixtures fixtures
 USER node
 EXPOSE 4000
 CMD ["node", "apps/api/dist/server.js"]

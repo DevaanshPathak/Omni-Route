@@ -1,0 +1,11 @@
+SYNTHETIC DEMO DOCUMENT — NOT A REAL COURT ORDER
+
+Order reference: ORD-123
+Event: Property ownership transfer
+Property reference: 45
+Revenue survey number: 45/2
+Village: Sampige
+District: Bengaluru Rural
+Beneficiary: Raju
+
+For the Omni-Route hackathon demonstration, ownership of the synthetic property described above is ordered to transfer to Raju.

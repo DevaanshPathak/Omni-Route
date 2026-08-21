@@ -1,0 +1,21 @@
+{
+  "schema_version": "court.v1",
+  "records": [
+    {
+      "order_ref": "ORD-123",
+      "property_ref": "COURT-PROP-45",
+      "beneficiary": "Raju",
+      "decree_status": "ISSUED",
+      "village_name": "Sampige",
+      "district_name": "Bengaluru Rural"
+    },
+    {
+      "order_ref": "ORD-456",
+      "property_ref": "COURT-PROP-45",
+      "beneficiary": "Raju",
+      "decree_status": "ISSUED",
+      "village_name": "Sampige",
+      "district_name": "Bengaluru Rural"
+    }
+  ]
+}

@@ -8,15 +8,18 @@ The safety boundary is deliberate: **the LLM proposes; it never executes.** Dete
 
 ## Current status
 
-Phase 0 is implemented:
+Phases 0 and 1 are implemented:
 
 - npm workspaces for a Next.js web app, Express API, and shared runtime contracts;
 - strict TypeScript, ESLint, Prettier, Tailwind CSS, and Vitest;
 - a typed `GET /health` contract displayed by the server-rendered web page;
 - production Docker images for the web and API applications; and
-- Docker Compose for a one-command local deployment.
+- Docker Compose for a one-command local deployment;
+- three independent Court, Registration, and Revenue mock APIs;
+- versioned synthetic JSON seeds copied into resettable in-memory stores; and
+- happy, conflict, missing-record, and synthetic decree fixtures.
 
-Product workflow behavior begins in Phase 1. See [`docs/PHASES.md`](docs/PHASES.md).
+The canonical model and workflow behavior begin in Phase 2. See [`docs/PHASES.md`](docs/PHASES.md).
 
 ## Prerequisites
 
@@ -37,7 +40,7 @@ Open:
 - Web: <http://localhost:3000>
 - API health: <http://localhost:4100/health>
 
-The root development command builds the shared package, then starts only the web and API processes. `OPENAI_API_KEY` is reserved for Phase 3 and is not needed for Phase 0.
+The root development command builds the shared package, then starts only the web and API processes. `OPENAI_API_KEY` is reserved for Phase 3 and is not needed yet.
 
 ## Run with Docker
 
@@ -76,23 +79,51 @@ apps/
 packages/
   shared/               Runtime schemas and shared TypeScript contracts
 data/
-  schemas/              Department schemas and mappings from Phase 1 onward
-  seeds/                Synthetic records from Phase 1 onward
+  schemas/              Department schemas and mappings from Phase 4 onward
+  seeds/                Versioned Court, Registration, and Revenue records
 fixtures/
-  documents/            Synthetic court-decree inputs from Phase 1 onward
+  documents/            Synthetic court-decree input
+  scenarios/            Happy, conflict, and missing-record manifests
 docs/                   Product, architecture, phase, and demo guidance
 docker-compose.yml      Local production-style topology
 ```
 
 ## Configuration
 
-| Variable           | Used by                       | Default                 | Notes                                  |
-| ------------------ | ----------------------------- | ----------------------- | -------------------------------------- |
-| `INTERNAL_API_URL` | Next.js server                | `http://localhost:4100` | Compose sets this to `http://api:4000` |
-| `PORT`             | Individual production process | app-specific            | Compose supplies 3000/4000             |
-| `WEB_PORT`         | Docker Compose                | `3000`                  | Host port only                         |
-| `API_PORT`         | Docker Compose                | `4100`                  | Host port only                         |
-| `OPENAI_API_KEY`   | Future API extraction service | unset                   | Server-side only; unused in Phase 0    |
+| Variable           | Used by                       | Default                 | Notes                                    |
+| ------------------ | ----------------------------- | ----------------------- | ---------------------------------------- |
+| `INTERNAL_API_URL` | Next.js server                | `http://localhost:4100` | Compose sets this to `http://api:4000`   |
+| `PORT`             | Individual production process | app-specific            | Compose supplies 3000/4000               |
+| `WEB_PORT`         | Docker Compose                | `3000`                  | Host port only                           |
+| `API_PORT`         | Docker Compose                | `4100`                  | Host port only                           |
+| `OPENAI_API_KEY`   | Future API extraction service | unset                   | Server-side only; unused through Phase 1 |
+
+## Synthetic API contracts
+
+All endpoints use fictional data. Successful mock-system responses use `{ "data": ... }`; errors use `{ "error": { "code", "message", "issues?" } }`.
+
+| System       | Lookup                                          | Update                                       |
+| ------------ | ----------------------------------------------- | -------------------------------------------- |
+| Court        | `GET /mock/court/orders/:orderRef`              | `POST /mock/court/orders/:orderRef/dispatch` |
+| Registration | `GET /mock/registration/properties/:propertyId` | `POST /mock/registration/transfers`          |
+| Revenue      | `GET /mock/revenue/properties/:encodedSurveyNo` | `POST /mock/revenue/mutations`               |
+| All systems  | —                                               | `POST /mock/reset`                           |
+
+The same concept intentionally has different field names:
+
+```text
+Court         property_ref / beneficiary
+Registration  property_id  / buyer_name
+Revenue       survey_no    / owner_nm
+```
+
+Example lookup:
+
+```bash
+curl http://localhost:4100/mock/court/orders/ORD-123
+```
+
+`POST /mock/reset` restores fresh in-memory copies of all committed seeds. Runtime updates never rewrite the files in `data/seeds/`.
 
 ## Documentation
 

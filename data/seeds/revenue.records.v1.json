@@ -1,0 +1,21 @@
+{
+  "schema_version": "revenue.v1",
+  "records": [
+    {
+      "survey_no": "45/2",
+      "owner_nm": "Anita Rao",
+      "mutation_required": false,
+      "revenue_village": "Sampige",
+      "district": "Bengaluru Rural",
+      "supporting_order_ref": "ORD-123"
+    },
+    {
+      "survey_no": "45/3",
+      "owner_nm": "Anita Rao",
+      "mutation_required": false,
+      "revenue_village": "Sampige",
+      "district": "Bengaluru Rural",
+      "supporting_order_ref": "ORD-456"
+    }
+  ]
+}

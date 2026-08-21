@@ -1,0 +1,11 @@
+{
+  "scenario": "missing-record",
+  "lookup": {
+    "system": "revenue",
+    "identifier": "99/9"
+  },
+  "expected": {
+    "status": 404,
+    "code": "NOT_FOUND"
+  }
+}

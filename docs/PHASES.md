@@ -52,6 +52,8 @@ The repository is runnable from a clean checkout with documented commands, and t
 
 ## Phase 1 — Synthetic systems and fixtures
 
+**Status:** Complete — verified locally and with Docker Compose on 2026-08-21.
+
 **Estimate:** 3–4 hours
 
 ### Goal

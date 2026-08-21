@@ -1,0 +1,23 @@
+{
+  "schema_version": "registration.v1",
+  "records": [
+    {
+      "document_no": "SALE-7781",
+      "property_id": "REG-2391",
+      "buyer_name": "Anita Rao",
+      "instrument_type": "SALE",
+      "locality": "Sampige",
+      "district_code": "BLR-R",
+      "court_order_ref": null
+    },
+    {
+      "document_no": "SALE-9002",
+      "property_id": "REG-5001",
+      "buyer_name": "Anita Rao",
+      "instrument_type": "SALE",
+      "locality": "Sampige",
+      "district_code": "BLR-R",
+      "court_order_ref": null
+    }
+  ]
+}

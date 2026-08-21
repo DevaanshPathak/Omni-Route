@@ -1,0 +1,14 @@
+{
+  "scenario": "happy-path",
+  "court": {
+    "order_ref": "ORD-123",
+    "property_ref": "COURT-PROP-45"
+  },
+  "registration": {
+    "document_no": "SALE-7781",
+    "property_id": "REG-2391"
+  },
+  "revenue": {
+    "survey_no": "45/2"
+  }
+}

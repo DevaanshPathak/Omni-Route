@@ -177,7 +177,7 @@ Representative write payloads:
 
 Adapters accept validated internal actions, convert them to these contracts, call the corresponding local mock route, and normalize the response. The workflow core never imports departmental field names from route handlers.
 
-Planned mock endpoints:
+Implemented Phase 1 mock endpoints:
 
 ```text
 GET  /mock/court/orders/:orderRef
@@ -191,6 +191,10 @@ POST /mock/revenue/mutations
 ```
 
 These routes are synthetic demonstrations, not representations of real government contracts.
+
+Every request body is validated against a strict Zod contract at the HTTP boundary. Successful responses use a `{ "data": ... }` envelope. Invalid requests and missing records use a stable JSON error envelope; cross-system payload reuse fails validation because unknown fields are rejected and required target fields are absent.
+
+`POST /mock/reset` restores all three stores from their startup snapshots without modifying the seed files. The update operations are deterministic set operations and are idempotent for the same payload; cross-system orchestration remains outside Phase 1.
 
 ## 7. Entity resolution
 
@@ -355,6 +359,7 @@ API container (Express)
 
 - `apps/web/Dockerfile` produces a Next.js standalone runtime image.
 - `apps/api/Dockerfile` produces a production-dependency API image.
+- The API image includes `data/` and `fixtures/`; only `data/seeds/` is read at runtime in Phase 1.
 - `docker-compose.yml` publishes the web and health endpoints, waits for API health before starting the web service, and passes the internal API URL server-side.
 - Both containers run as the unprivileged `node` user and handle their normal process signals through Compose `init`.
 - Runtime state remains ephemeral. Recreating the API container resets it by design.

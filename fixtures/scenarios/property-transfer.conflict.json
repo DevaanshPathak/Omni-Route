@@ -1,0 +1,19 @@
+{
+  "scenario": "conflicting-property",
+  "court": {
+    "order_ref": "ORD-456",
+    "property_ref": "COURT-PROP-45"
+  },
+  "registration": {
+    "document_no": "SALE-9002",
+    "property_id": "REG-5001"
+  },
+  "revenue": {
+    "survey_no": "45/3"
+  },
+  "conflict": {
+    "field": "property.survey_number",
+    "expected": "45/2",
+    "actual": "45/3"
+  }
+}
