@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Framework and build output
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Runtime/demo state (committed fixtures under data/seeds and fixtures stay tracked)
+data/runtime/
+uploads/
+tmp/
+*.local.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Test/browser artifacts
+playwright-report/
+test-results/
