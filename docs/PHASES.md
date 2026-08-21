@@ -6,11 +6,13 @@ These phases implement one local hackathon MVP: a synthetic court decree becomes
 
 Each phase must leave `main` installable, runnable, and green. Use feature flags, stubs, or fixture-driven seams when a later capability is incomplete. Do not add PostgreSQL, Redis, authentication, a separate gateway, queues, or live government integrations.
 
-Estimated total: **27–35 team hours** for a 2–3 person team. Estimates are elapsed team effort, not per-person totals, and assume narrow fixtures rather than production hardening.
+Estimated total: **28–36 team hours** for a 2–3 person team. Estimates are elapsed team effort, not per-person totals, and assume narrow fixtures rather than production hardening.
 
 ## Phase 0 — Repository scaffold and tooling
 
-**Estimate:** 2–3 hours
+**Status:** Complete — verified locally and with Docker Compose on 2026-08-21.
+
+**Estimate:** 3–4 hours
 
 ### Goal
 
@@ -27,12 +29,13 @@ Create the smallest working TypeScript monorepo that starts the UI and API local
 - Planned directories: `data/schemas`, `data/seeds`, and `fixtures/documents`.
 - Health endpoint and minimal web page proving web-to-API connectivity.
 - Fast unit-test runner and formatting/lint configuration; avoid heavy infrastructure.
+- Production Dockerfiles for the web and API applications plus a root Compose topology with health checks.
 
 ### Constraints
 
 - Use npm and a supported Node.js LTS release.
 - Keep the frontend and API as the only running processes.
-- Do not add a database, queue, auth provider, gateway, container stack, or deployment configuration.
+- Docker and Compose are the only approved deployment additions for this phase. Do not add a database, queue, auth provider, gateway, reverse proxy, or cloud orchestration.
 - Do not implement extraction or workflow logic in this phase.
 
 ### Verification
@@ -41,6 +44,7 @@ Create the smallest working TypeScript monorepo that starts the UI and API local
 - `npm run dev` starts both applications.
 - The web page displays API health.
 - `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` pass.
+- Both Docker images build, Compose reaches healthy state, and the web container reaches the API over the internal network.
 
 ### Exit criteria
 

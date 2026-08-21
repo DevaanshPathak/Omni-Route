@@ -18,7 +18,8 @@ These files are the source of truth. If a request conflicts with them, call out 
 - Use Court, Registration, and Revenue consistently; do not introduce real system names or imply live integration.
 - Use only synthetic people, documents, properties, and responses.
 - Keep mutable runtime state in memory. Load seeds, JSON Schemas, mappings, and demo documents from committed files without rewriting them.
-- Do not add PostgreSQL, Redis, queues, authentication, an API gateway service, microservices, containers, or deployment infrastructure unless the user explicitly changes scope.
+- Do not add PostgreSQL, Redis, queues, authentication, an API gateway service, microservices, or cloud deployment infrastructure unless the user explicitly changes scope.
+- Dockerfiles for the two application processes and root Docker Compose are an approved Phase 0 baseline. Keep them stateless and do not add Kubernetes, a reverse proxy, or supporting services without explicit scope.
 - Entity resolution and target mapping are deterministic. Do not use an LLM or embedding service for them.
 - Never expose an adapter or mutation tool to the LLM. Validate model output as untrusted input at the canonical boundary.
 - Fail closed on missing evidence, conflicts, unknown mappings, low confidence, invalid payloads, or failed policy.
@@ -34,6 +35,7 @@ data/schemas/           Versioned target contracts and approved mappings
 data/seeds/             Immutable synthetic system seeds
 fixtures/documents/     Synthetic demo inputs
 docs/                   Product and implementation guidance
+docker-compose.yml      Production-style local web/API topology
 ```
 
 Keep dependencies pointed inward: UI → API contracts; API workflow → canonical/shared modules; adapters → mock contracts. Canonical modules must not import target-system field names.
@@ -45,9 +47,10 @@ Keep dependencies pointed inward: UI → API contracts; API workflow → canonic
 3. Add a focused behavior test before or with production behavior changes.
 4. Keep the repo runnable; use explicit stubs or feature flags for incomplete later-phase behavior.
 5. Run the narrowest relevant tests, then root lint, typecheck, test, and build commands once Phase 0 defines them.
-6. Inspect the diff for accidental generated files, secrets, raw uploads, and scope creep.
-7. Update source-of-truth docs when contracts, behavior, commands, or phase decisions change.
-8. Commit and push the completed increment directly to `main`.
+6. When container files or runtime packaging change, build both images and smoke-test Compose health.
+7. Inspect the diff for accidental generated files, secrets, raw uploads, and scope creep.
+8. Update source-of-truth docs when contracts, behavior, commands, or phase decisions change.
+9. Commit and push the completed increment directly to `main`.
 
 ## Version control — required
 

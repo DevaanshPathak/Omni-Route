@@ -33,6 +33,8 @@ Express API
 
 For MVP speed, the mock routes live in the same API process under separate route modules. They retain explicit adapter boundaries and incompatible contracts, so they can be split later without changing the core workflow.
 
+The web and API processes can run directly through npm or as two stateless Docker containers. Containerization changes packaging, not the application boundaries: the synthetic mock routes remain modules inside the API container.
+
 ## 3. Probabilistic/deterministic boundary
 
 ```text
@@ -138,12 +140,12 @@ Runtime validation is required when the extraction response enters the canonical
 
 The three systems intentionally describe equivalent concepts differently and may use different identifiers for the same property.
 
-| Concept | Court | Registration | Revenue |
-| --- | --- | --- | --- |
-| Legal order | `order_ref` | `document_no` | supporting reference in seeded relation data |
-| Property | `property_ref` | `property_id` | `survey_no` |
-| New owner | `beneficiary` | `buyer_name` | `owner_nm` |
-| Operation flag | `decree_status` | `instrument_type` | `mutation_required` |
+| Concept        | Court           | Registration      | Revenue                                      |
+| -------------- | --------------- | ----------------- | -------------------------------------------- |
+| Legal order    | `order_ref`     | `document_no`     | supporting reference in seeded relation data |
+| Property       | `property_ref`  | `property_id`     | `survey_no`                                  |
+| New owner      | `beneficiary`   | `buyer_name`      | `owner_nm`                                   |
+| Operation flag | `decree_status` | `instrument_type` | `mutation_required`                          |
 
 Representative write payloads:
 
@@ -196,12 +198,12 @@ Entity resolution is a pure deterministic scoring function over candidate record
 
 A committed rule configuration assigns weights totaling `1.00`, for example:
 
-| Evidence | Weight | Match behavior |
-| --- | ---: | --- |
-| Legal-order/document reference | 0.35 | normalized exact match |
-| Property/survey relationship | 0.30 | exact match through seeded relation metadata |
-| Village and district | 0.20 | normalized exact match; both required for full weight |
-| Owner/beneficiary name | 0.15 | normalized exact match for the demo fixtures |
+| Evidence                       | Weight | Match behavior                                        |
+| ------------------------------ | -----: | ----------------------------------------------------- |
+| Legal-order/document reference |   0.35 | normalized exact match                                |
+| Property/survey relationship   |   0.30 | exact match through seeded relation metadata          |
+| Village and district           |   0.20 | normalized exact match; both required for full weight |
+| Owner/beneficiary name         |   0.15 | normalized exact match for the demo fixtures          |
 
 The resolver returns the candidate ID, total score, each contributing signal, and any conflicts. The automatic threshold is configuration, initially `0.90`. A conflict on a required identifier blocks regardless of aggregate score.
 
@@ -292,15 +294,15 @@ The trace includes input metadata (not document binary), extraction output, reso
 
 ## 13. MVP state and storage
 
-| Data | MVP location | Lifecycle |
-| --- | --- | --- |
-| Synthetic records | committed JSON under `data/seeds/` | read at startup; copied into memory |
-| JSON Schemas and mapping rules | committed JSON under `data/schemas/` | read-only configuration |
-| Demo decrees | committed synthetic files under `fixtures/documents/` | reusable inputs |
-| Canonical entities and workflows | API-process memory | reset on restart/demo reset |
-| Mutable mock-system state | API-process memory initialized from seeds | reset on restart/demo reset |
-| Validation results and audit events | API-process memory | retained for the current demo session |
-| Uploaded document bytes | transient request processing only | not persisted |
+| Data                                | MVP location                                          | Lifecycle                             |
+| ----------------------------------- | ----------------------------------------------------- | ------------------------------------- |
+| Synthetic records                   | committed JSON under `data/seeds/`                    | read at startup; copied into memory   |
+| JSON Schemas and mapping rules      | committed JSON under `data/schemas/`                  | read-only configuration               |
+| Demo decrees                        | committed synthetic files under `fixtures/documents/` | reusable inputs                       |
+| Canonical entities and workflows    | API-process memory                                    | reset on restart/demo reset           |
+| Mutable mock-system state           | API-process memory initialized from seeds             | reset on restart/demo reset           |
+| Validation results and audit events | API-process memory                                    | retained for the current demo session |
+| Uploaded document bytes             | transient request processing only                     | not persisted                         |
 
 This design favors a predictable local demo over durability. File-backed configuration is committed; runtime mutations do not rewrite seed files.
 
@@ -327,6 +329,7 @@ The fixture must prove that no Court, Registration, or Revenue mutation occurred
 The exact route shapes are finalized during implementation, but the planned public workflow surface is intentionally small:
 
 ```text
+GET  /health                         Phase 0 service health contract
 POST /api/workflows                 create from text or synthetic upload
 GET  /api/workflows/:id             citizen-facing state/result
 GET  /api/workflows/:id/trace       Semantic Action Graph + audit detail
@@ -336,18 +339,40 @@ POST /api/demo/schema/revenue/drift enable/disable the drift fixture
 
 Mock-system routes are internal demo boundaries in the same process and are not called by the browser.
 
-## 16. Out of scope infrastructure
+## 16. Container packaging
 
-| Component | Why it is excluded from the MVP |
-| --- | --- |
-| PostgreSQL | Durable relational persistence does not improve the four-minute local proof; seeded JSON plus memory is sufficient. |
-| Redis/queue | There is no distributed worker, coordination, or throughput requirement in the three-action demo. |
-| Separate API gateway | A single local API process does not justify another deployable service. |
+```text
+Host browser
+    │ :3000
+    ▼
+Web container (Next.js standalone server)
+    │ http://api:4000 on the Compose network
+    ▼
+API container (Express)
+    │
+    └─ in-memory Phase 0+ runtime state
+```
+
+- `apps/web/Dockerfile` produces a Next.js standalone runtime image.
+- `apps/api/Dockerfile` produces a production-dependency API image.
+- `docker-compose.yml` publishes the web and health endpoints, waits for API health before starting the web service, and passes the internal API URL server-side.
+- Both containers run as the unprivileged `node` user and handle their normal process signals through Compose `init`.
+- Runtime state remains ephemeral. Recreating the API container resets it by design.
+
+Compose is a deployment convenience for the hackathon, not an API gateway or a production orchestration platform.
+
+## 17. Out of scope infrastructure
+
+| Component               | Why it is excluded from the MVP                                                                                        |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| PostgreSQL              | Durable relational persistence does not improve the four-minute local proof; seeded JSON plus memory is sufficient.    |
+| Redis/queue             | There is no distributed worker, coordination, or throughput requirement in the three-action demo.                      |
+| Separate API gateway    | A single local API process does not justify another deployable service.                                                |
 | Authentication/identity | The prototype uses only synthetic users and records; production identity and policy cannot be credibly simulated here. |
-| Object/audit storage | Inputs and traces are demo-only and resettable; durable/tamper-evident storage is future work. |
-| Microservices | Process boundaries would add failure modes without strengthening the semantic interoperability proof. |
+| Object/audit storage    | Inputs and traces are demo-only and resettable; durable/tamper-evident storage is future work.                         |
+| Microservices           | Process boundaries would add failure modes without strengthening the semantic interoperability proof.                  |
 
-## 17. Security and configuration constraints
+## 18. Security and configuration constraints
 
 - Keep `OPENAI_API_KEY` server-side and out of logs, responses, fixtures, and Git.
 - Limit accepted upload type and size; treat extracted text and model output as untrusted.
@@ -355,8 +380,9 @@ Mock-system routes are internal demo boundaries in the same process and are not 
 - Permit only enumerated event types, systems, operations, mappings, and adapters.
 - Store and display synthetic data only.
 - Redact raw document content from normal audit summaries.
+- Run application containers as an unprivileged user and keep secrets in runtime environment variables, not image layers.
 
-## 18. Verification seams
+## 19. Verification seams
 
 The highest-value automated checks are:
 
