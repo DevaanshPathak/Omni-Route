@@ -24,6 +24,10 @@ export class InMemoryRecordStore<TRecord> {
     return structuredClone(nextRecord);
   }
 
+  list(): TRecord[] {
+    return [...this.#records.values()].map((record) => structuredClone(record));
+  }
+
   reset(): void {
     const nextRecords = new Map<string, TRecord>();
 

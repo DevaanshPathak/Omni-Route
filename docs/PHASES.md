@@ -167,6 +167,8 @@ A citizen input can produce a validated canonical event and an `UNDERSTANDING_CO
 
 ## Phase 4 — Entity resolution, schema registry, and semantic mapping
 
+**Status:** Complete — deterministic planning API verified on 2026-08-21.
+
 **Estimate:** 4–5 hours
 
 ### Goal

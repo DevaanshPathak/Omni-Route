@@ -34,6 +34,29 @@ export type {
   WorkflowState,
 } from "./canonical.js";
 export {
+  ActionExecutionSchema,
+  ActionValidationSchema,
+  EntityMatchSchema,
+  FieldMappingSchema,
+  InteroperabilityGraphSchema,
+  ResolutionResultSchema,
+  ResolutionSignalSchema,
+  SemanticActionSchema,
+  WorkflowTraceResponseSchema,
+  WorkflowTraceSchema,
+} from "./interoperability.js";
+export type {
+  ActionExecution,
+  ActionValidation,
+  EntityMatch,
+  FieldMapping,
+  InteroperabilityGraph,
+  ResolutionResult,
+  ResolutionSignal,
+  SemanticAction,
+  WorkflowTrace,
+} from "./interoperability.js";
+export {
   CanonicalEventProposalSchema,
   UnderstandingErrorCodeSchema,
   UnderstandingInputSchema,

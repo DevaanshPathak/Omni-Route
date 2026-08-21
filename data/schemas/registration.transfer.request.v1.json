@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "registration.transfer.request.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["document_no", "property_id", "buyer_name", "instrument_type"],
+  "properties": {
+    "document_no": { "type": "string", "minLength": 1 },
+    "property_id": { "type": "string", "minLength": 1 },
+    "buyer_name": { "type": "string", "minLength": 1 },
+    "instrument_type": { "const": "COURT_ORDER" }
+  }
+}

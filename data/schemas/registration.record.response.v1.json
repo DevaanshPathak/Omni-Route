@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "registration.record.response.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "document_no",
+    "property_id",
+    "buyer_name",
+    "instrument_type",
+    "locality",
+    "district_code",
+    "court_order_ref"
+  ],
+  "properties": {
+    "document_no": { "type": "string" },
+    "property_id": { "type": "string" },
+    "buyer_name": { "type": "string" },
+    "instrument_type": { "enum": ["SALE", "COURT_ORDER"] },
+    "locality": { "type": "string" },
+    "district_code": { "type": "string" },
+    "court_order_ref": { "type": ["string", "null"] }
+  }
+}

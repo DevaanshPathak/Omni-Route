@@ -8,7 +8,7 @@ The safety boundary is deliberate: **the LLM proposes; it never executes.** Dete
 
 ## Current status
 
-Phases 0 through 3 are implemented:
+Phases 0 through 4 are implemented:
 
 - npm workspaces for a Next.js web app, Express API, and shared runtime contracts;
 - strict TypeScript, ESLint, Prettier, Tailwind CSS, and Vitest;
@@ -26,8 +26,11 @@ Phases 0 through 3 are implemented:
 - an automatic deterministic fixture fallback for tests and key-free demos; and
 - an interactive browser console for testing text or `.txt` extraction, inspecting the canonical
   result and audit timeline, and reading the three seeded system records without mutating them.
+- versioned request/response JSON Schemas and approved canonical-to-target mapping metadata;
+- deterministic three-system entity resolution with named weighted signals and a `0.90` gate; and
+- a non-executable Semantic Action Graph preview and inspectable workflow trace API.
 
-Deterministic entity resolution and semantic mapping begin in Phase 4. See [`docs/PHASES.md`](docs/PHASES.md).
+Deterministic validation and execution begin in Phase 5. See [`docs/PHASES.md`](docs/PHASES.md).
 
 ## Prerequisites
 
@@ -182,6 +185,19 @@ Provider modes:
 - `fixture`: always use the deterministic ORD-123 demo proposal.
 
 Successful extraction creates a canonical workflow in `UNDERSTANDING_COMPLETE`. Provider output is validated as an untrusted proposal, converted to deterministic canonical IDs, and validated again against the canonical event schema. This phase does not resolve entities, map schemas, or call mock-system updates.
+
+## Deterministic planning API
+
+Phase 4 adds two non-executable planning endpoints:
+
+| Method | Endpoint                           | Behavior                                      |
+| ------ | ---------------------------------- | --------------------------------------------- |
+| POST   | `/api/workflows/:workflowId/plan`  | Resolve records and build the action graph    |
+| GET    | `/api/workflows/:workflowId/trace` | Inspect the canonical workflow and graph data |
+
+Planning loads committed versioned JSON Schemas and approved mapping rules from `data/schemas/`.
+The resolver exposes legal-order, property-relationship, location, and operation-eligibility score
+components. Phase 4 previews payloads but never invokes a mock mutation route.
 
 ## Documentation
 

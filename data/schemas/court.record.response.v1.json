@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "court.record.response.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "order_ref",
+    "property_ref",
+    "beneficiary",
+    "decree_status",
+    "village_name",
+    "district_name"
+  ],
+  "properties": {
+    "order_ref": { "type": "string" },
+    "property_ref": { "type": "string" },
+    "beneficiary": { "type": "string" },
+    "decree_status": { "enum": ["ISSUED", "DISPATCHED"] },
+    "village_name": { "type": "string" },
+    "district_name": { "type": "string" }
+  }
+}

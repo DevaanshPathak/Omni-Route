@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "revenue.record.response.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "survey_no",
+    "owner_nm",
+    "mutation_required",
+    "revenue_village",
+    "district",
+    "supporting_order_ref"
+  ],
+  "properties": {
+    "survey_no": { "type": "string" },
+    "owner_nm": { "type": "string" },
+    "mutation_required": { "type": "boolean" },
+    "revenue_village": { "type": "string" },
+    "district": { "type": "string" },
+    "supporting_order_ref": { "type": "string" }
+  }
+}

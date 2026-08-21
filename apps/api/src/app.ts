@@ -4,6 +4,9 @@ import { ApiErrorResponseSchema, HealthResponseSchema } from "@omni-route/shared
 
 import { registerCanonicalRuntimeRoutes } from "./canonical-runtime/routes.js";
 import { CanonicalRuntimeStore } from "./canonical-runtime/runtime-store.js";
+import { PlanningService } from "./interoperability/planning-service.js";
+import { loadInteroperabilityRegistry } from "./interoperability/registry.js";
+import { registerInteroperabilityRoutes } from "./interoperability/routes.js";
 import { registerMockSystemRoutes } from "./mock-systems/routes.js";
 import { createMockSystemStores, type MockSystemStores } from "./mock-systems/stores.js";
 import { createProviderResolver } from "./understanding/provider-resolver.js";
@@ -50,7 +53,9 @@ export function createApp(options: AppOptions = {}): Express {
       ? createProviderResolver(process.env)
       : () => options.understandingProvider!;
   const understandingService = new UnderstandingService(runtimeStore, providerResolver);
+  const planningService = new PlanningService(runtimeStore, stores, loadInteroperabilityRegistry());
   const resetAll = () => {
+    planningService.reset();
     runtimeStore.reset();
     stores.reset();
   };
@@ -72,6 +77,7 @@ export function createApp(options: AppOptions = {}): Express {
   registerMockSystemRoutes(app, stores, resetAll);
   registerCanonicalRuntimeRoutes(app, runtimeStore, resetAll);
   registerUnderstandingRoutes(app, understandingService);
+  registerInteroperabilityRoutes(app, planningService);
 
   app.use((_request, response) => {
     response.status(404).json(

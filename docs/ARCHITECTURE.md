@@ -221,9 +221,9 @@ A committed rule configuration assigns weights totaling `1.00`, for example:
 | Legal-order/document reference |   0.35 | normalized exact match                                |
 | Property/survey relationship   |   0.30 | exact match through seeded relation metadata          |
 | Village and district           |   0.20 | normalized exact match; both required for full weight |
-| Owner/beneficiary name         |   0.15 | normalized exact match for the demo fixtures          |
+| Operation eligibility          |   0.15 | target record is in the required pre-transfer state   |
 
-The resolver returns the candidate ID, total score, each contributing signal, and any conflicts. The automatic threshold is configuration, initially `0.90`. A conflict on a required identifier blocks regardless of aggregate score.
+The resolver returns the candidate ID, total score, each contributing signal, and any conflicts. The automatic threshold is configuration, initially `0.90`. A conflict on a required identifier blocks regardless of aggregate score. Current-owner fields are not compared with the intended post-transfer owner; that would incorrectly penalize the records the workflow is meant to update.
 
 The weights and normalizers are intentionally simple, visible, and testable. More sophisticated fuzzy matching is not required for the MVP.
 
