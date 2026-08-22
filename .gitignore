@@ -33,3 +33,4 @@ Thumbs.db
 # Test/browser artifacts
 playwright-report/
 test-results/
+/graphify-out

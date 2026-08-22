@@ -1221,3 +1221,388 @@ input:focus-visible {
     grid-template-columns: 1fr;
   }
 }
+
+/* Citizen Portal UI Styles */
+.citizen-portal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.portal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid rgb(23 62 49 / 14%);
+  border-radius: 1.25rem;
+  background: rgb(255 255 255 / 80%);
+  box-shadow: 0 12px 40px rgb(30 67 53 / 7%);
+  backdrop-filter: blur(16px);
+}
+
+.portal-header-title h1 {
+  margin: 0;
+  color: #173e31;
+  font-size: 1.55rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.portal-header-title p {
+  margin: 0.25rem 0 0;
+  color: #536960;
+  font-size: 0.85rem;
+}
+
+.portal-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.language-selector-pills {
+  display: inline-flex;
+  gap: 0.25rem;
+  border: 1px solid rgb(23 62 49 / 18%);
+  border-radius: 999px;
+  background: #f0ece1;
+  padding: 0.25rem;
+}
+
+.lang-pill {
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0.4rem 0.75rem;
+  color: #4b6259;
+  font-size: 0.76rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.lang-pill-active {
+  background: #173e31;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgb(23 62 49 / 25%);
+}
+
+.mode-toggle-button {
+  cursor: pointer;
+  border: 1px solid #173e31;
+  border-radius: 999px;
+  background: #173e31;
+  padding: 0.55rem 1rem;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 750;
+  transition: all 0.2s ease;
+}
+
+.mode-toggle-button:hover {
+  background: #102e24;
+}
+
+.mode-judge-active {
+  border-color: #df5d32;
+  background: #df5d32;
+}
+
+.dropzone-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dropzone-subtext {
+  margin: 0;
+  color: #687a73;
+  font-size: 0.76rem;
+}
+
+.file-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.3rem 0;
+  flex-wrap: wrap;
+}
+
+.file-button-badge {
+  cursor: pointer;
+  border: 1px dashed rgb(23 62 49 / 35%);
+  border-radius: 0.75rem;
+  background: #f6f3ea;
+  padding: 0.55rem 0.9rem;
+  color: #173e31;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.sample-preset-button {
+  cursor: pointer;
+  border: 1px solid rgb(29 104 77 / 30%);
+  border-radius: 0.75rem;
+  background: #eef6f2;
+  padding: 0.55rem 0.9rem;
+  color: #1d684d;
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.advanced-toggle-link {
+  cursor: pointer;
+  margin-top: 1rem;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #1d684d;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.submit-cta-button {
+  padding: 0.9rem 1.4rem;
+  font-size: 0.88rem;
+}
+
+.citizen-certificate-card {
+  grid-column: 1 / -1;
+  border: 2px solid #239367;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f3faf6 100%);
+  padding: 1.75rem 2rem;
+  box-shadow: 0 20px 60px rgb(35 147 103 / 15%);
+}
+
+.certificate-header h2 {
+  margin: 0.5rem 0 0.25rem;
+  color: #113f30;
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+.certificate-header p {
+  margin: 0;
+  color: #3b5a4f;
+  font-size: 0.92rem;
+}
+
+.certificate-badge {
+  display: inline-block;
+  border-radius: 999px;
+  background: #239367;
+  padding: 0.35rem 0.85rem;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.certificate-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgb(35 147 103 / 20%);
+}
+
+.cert-label {
+  display: block;
+  color: #647b72;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cert-value {
+  display: block;
+  margin-top: 0.3rem;
+  color: #113f30;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.cert-code {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 800px) {
+  .portal-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .certificate-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Citizen Journey Flow Graph Styles */
+.citizen-graph-card {
+  grid-column: 1 / -1;
+  border: 1px solid rgb(23 62 49 / 16%);
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 85%);
+  padding: 1.5rem 1.8rem;
+  box-shadow: 0 16px 50px rgb(30 67 53 / 8%);
+  backdrop-filter: blur(16px);
+}
+
+.citizen-graph-header h3 {
+  margin: 0.2rem 0 1rem;
+  color: #173e31;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.citizen-graph-root-node {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 580px;
+  margin: 0 auto;
+  border: 2px solid #173e31;
+  border-radius: 1rem;
+  background: #f4f8f5;
+  padding: 0.9rem 1.25rem;
+}
+
+.node-icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #173e31;
+  color: #ffffff;
+  font-size: 1.3rem;
+}
+
+.citizen-graph-root-node small {
+  display: block;
+  color: #5c746b;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.citizen-graph-root-node strong {
+  display: block;
+  color: #173e31;
+  font-size: 1.05rem;
+}
+
+.node-subtext {
+  display: block;
+  margin-top: 0.15rem;
+  color: #40594f;
+  font-size: 0.78rem;
+}
+
+.citizen-graph-connectors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  height: 2.2rem;
+  margin: 0.25rem 0;
+}
+
+.connector-line {
+  width: 2px;
+  height: 100%;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #173e31 0%, rgb(23 62 49 / 20%) 100%);
+}
+
+.citizen-graph-nodes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.citizen-node-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgb(23 62 49 / 14%);
+  border-radius: 1.15rem;
+  background: #fbfaf6;
+  padding: 1.15rem;
+}
+
+.node-verified {
+  border-color: #239367;
+  background: #f1f9f4;
+}
+
+.node-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.node-emoji {
+  font-size: 1.5rem;
+}
+
+.node-card-header small {
+  color: #687a73;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.node-card-header h4 {
+  margin: 0.15rem 0 0;
+  color: #173e31;
+  font-size: 0.96rem;
+}
+
+.node-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 70%);
+  font-size: 0.78rem;
+}
+
+.node-details span {
+  color: #61736b;
+}
+
+.node-details strong {
+  color: #173e31;
+  margin-left: 0.3rem;
+}
+
+.node-status-badge {
+  text-align: center;
+  border-radius: 999px;
+  background: #239367;
+  padding: 0.4rem 0.75rem;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .citizen-graph-nodes-grid {
+    grid-template-columns: 1fr;
+  }
+  .citizen-graph-connectors {
+    display: none;
+  }
+}
+
+
